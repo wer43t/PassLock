@@ -1,0 +1,71 @@
+﻿@attribute [Authorize]
+@inject IModalService ModalService
+@inject NavigationManager NavigationManager
+@inherits BookTourModel
+
+<div class="row">
+    @Tour.Name
+</div>
+<div class="row">
+    @Tour.DepartureDate.ToShortDateString()
+</div>
+<div class="row">
+    @Tour.ArrivalDate.ToShortDateString()
+</div>
+<EditForm Model="@ViewModel" OnInvalidSubmit="BookThisTour">
+    <div class="row">
+        <InputSelect @bind-Value="@ViewModel.SelectedTourist">
+            @foreach (var tourist in Tourists)
+            {
+                <option value="@tourist.Id">"@tourist.ToString()"</option> 
+            }
+        </InputSelect>
+    </div>
+    <div class="row my-1">
+        <button class="btn btn-primary" type="submit" @onclick=BookThisTour>Забронировать</button>
+    </div>
+</EditForm>
+
+<div class="row col my-3">
+    <div class="row">Уже забронировали</div>
+    <ol>
+        @foreach (var tt in Tour.TouristTours)
+        {
+            <li>@($"{tt.Tourist}")</li>
+        }
+    </ol>
+</div>
+
+@code {
+    [Parameter]
+    public Tour Tour { get; set; }
+
+    public List<Tourist> Tourists;
+
+    public Tourist SelectedTourist { get; set; }
+    protected override void OnInitialized()
+    {
+        Tourists = DataAccess.GetTourists();
+        ViewModel.SelectedTourist = Tourists.FirstOrDefault().Id;
+    }
+
+    private void SelectedTouristChanged()
+    {
+        
+    }
+
+    public void BookThisTour()
+    {
+        if (Tour.TouristTours.Where(x => x.TouristId == ViewModel.SelectedTourist).Count() == 0)
+        {
+            var tt = new TouristTour { TourId = Tour.Id, TouristId = ViewModel.SelectedTourist };
+            Tour.TouristTours.Add(tt);
+            DataAccess.SaveTour(Tour);           
+        }
+        else
+        {
+            
+        }
+    }
+
+}

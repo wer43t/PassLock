@@ -1,0 +1,53 @@
+﻿@page "/tourists"
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Туристы</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewTouristClick)>
+                    Добавить туриста
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Email</th>
+                    <th>Номер телефона</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var tourist in TouristsList)
+            {
+                <tr @onclick="@(() => OnRowClick(tourist))">
+                    <td>@tourist.ToString()</td>
+                    <td>@tourist.Email</td>
+                    <td>@tourist.PhoneNumber</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@code {
+    public List<Tourist> TouristsList = DataAccess.GetTourists();
+
+    public void NewTouristClick()
+    {
+        NavigationManager.NavigateTo("/tourists/new");
+    }
+
+    public void OnRowClick(Tourist tourist)
+    {
+        NavigationManager.NavigateTo($"/tourists/{tourist.Id}");
+    }
+}

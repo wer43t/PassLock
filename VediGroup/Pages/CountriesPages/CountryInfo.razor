@@ -1,0 +1,55 @@
+﻿@page "/countries/{stringId}"
+@inherits CountryModel
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @if (stringId == "new")
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <h1>Новая страна</h1>
+
+                <label for="name">Название</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else if (int.TryParse(stringId, out Id) && ViewModel.Name != null)
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <h1>Редактирование страны</h1>
+
+                <label for="name">Название</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else
+        {
+            <Redirect Path="/countries" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string stringId { get; set; }
+    public int Id;
+
+    protected override void OnInitialized()
+    {
+        int.TryParse(stringId, out Id);
+        if (Id != 0)
+            ViewModel.Country = DataAccess.GetCountry(Id);
+    }
+
+}

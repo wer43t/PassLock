@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="45e6425a3b5e4253b6eb7462255222ba" Name="Diagram1" ZoomLevel="88">
+        <EntityTypeShape EntityType="VediGroupModel.City" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="VediGroupModel.Country" Width="1.5" PointX="0.75" PointY="1.5" />
+        <EntityTypeShape EntityType="VediGroupModel.Hotel" Width="1.5" PointX="5.25" PointY="1.375" />
+        <EntityTypeShape EntityType="VediGroupModel.Role" Width="1.5" PointX="9.75" PointY="5.375" />
+        <EntityTypeShape EntityType="VediGroupModel.Tour" Width="1.5" PointX="7.5" PointY="1" />
+        <EntityTypeShape EntityType="VediGroupModel.Tourist" Width="1.5" PointX="7.5" PointY="6.625" />
+        <EntityTypeShape EntityType="VediGroupModel.TouristTour" Width="1.5" PointX="9.75" PointY="1.375" />
+        <EntityTypeShape EntityType="VediGroupModel.User" Width="1.5" PointX="12" PointY="5" />
+        <EntityTypeShape EntityType="VediGroupModel.VisaAvailability" Width="1.5" PointX="5.25" PointY="7.625" />
+        <AssociationConnector Association="VediGroupModel.FK_City_Country" />
+        <AssociationConnector Association="VediGroupModel.FK_Hotel_City" />
+        <AssociationConnector Association="VediGroupModel.FK_Tour_Hotel" />
+        <AssociationConnector Association="VediGroupModel.FK_User_Role" />
+        <AssociationConnector Association="VediGroupModel.FK_TouristTour_Tour" />
+        <AssociationConnector Association="VediGroupModel.FK_Tourist_VisaAvailability" />
+        <AssociationConnector Association="VediGroupModel.FK_TouristTour_Tourist" />
+        <EntityTypeShape EntityType="VediGroupModel.sysdiagram" Width="1.5" PointX="0.75" PointY="4.75" />
+        <AssociationConnector Association="VediGroupModel.FK_Tour_City" />
+        <AssociationConnector Association="VediGroupModel.FK_Tour_Country" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

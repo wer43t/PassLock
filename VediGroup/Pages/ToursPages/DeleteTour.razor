@@ -1,0 +1,28 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+
+<h3>Вы действительно хотите удалить тур?</h3>
+
+<div class="row">
+    <button class="btn btn-ligth col mx-4" @onclick=CancelClick>Отмена</button>
+    <button class="btn btn-danger col mx-4" @onclick=DeleteClick>Удалить</button>
+</div>
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public Tour Tour { get; set; }
+
+    public void DeleteClick()
+    {
+        DataAccess.DeleteTour(Tour);
+        NavigationManager.NavigateTo($"tours", true);
+    }
+
+    public void CancelClick()
+    {
+        ModalInstance.CloseAsync();
+    }
+}

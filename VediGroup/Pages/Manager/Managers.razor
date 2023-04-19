@@ -1,0 +1,51 @@
+﻿@page "/managers"
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Менеджеры</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewManagerClick)>
+                    Добавить менеджера
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <td>ФИО</td>
+                    <td>Email</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var manager in ManagersList)
+                {
+                    <tr @onclick="@(() => OnRowClick(manager))">
+                        <td>@manager.ToString()</td>
+                        <td>@manager.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<User> ManagersList = DataAccess.GetManagers();
+
+    public void NewManagerClick()
+    {
+        NavigationManager.NavigateTo("/managers/new");
+    }
+
+    public void OnRowClick(User manager)
+    {
+        NavigationManager.NavigateTo($"/managers/{manager.Id}");
+    }
+
+}

@@ -1,0 +1,47 @@
+﻿@page "/countries"
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Страны</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewCountryClick)>
+                    Добавить страну
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var country in CountriesList)
+                {
+                    <tr @onclick="@(() => OnRowClick(country))">
+                        <td>@country.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<Country> CountriesList = DataAccess.GetCountries();
+
+    public void NewCountryClick()
+    {
+        NavigationManager.NavigateTo("/countries/new");
+    }
+
+    public void OnRowClick(Country country)
+    {
+        NavigationManager.NavigateTo($"/countries/{country.Id}");
+    }
+}

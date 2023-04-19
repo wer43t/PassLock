@@ -1,0 +1,102 @@
+﻿@page "/tours"
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+@inherits TourModel
+@inject IModalService ModalService
+
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Туры</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewTourClick)>
+                    Добавить тур
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        @foreach (var tour in ToursList)
+        {
+            <div class="tours-card" @onclick="@(() => OnRowClick(tour))">
+                <div class="tour-image-container">
+                    @if(tour.Image == null){
+                        <img src="assets/placeholder.jpg">
+                    }
+                    else
+                    {
+                        <img src="data:image/png;base64, @Convert.ToBase64String(tour.Image)">
+                    }
+                </div>
+                <div class="tour-name">@tour.Name</div>
+                <div class="tour-city-country">
+                    <div class="tour-city">@tour.City.Name,</div>
+                    <div class="tour-country">@tour.Country.Name</div>
+                </div>
+                <div class="tour-departure">@GetDepartureDate(tour)</div>
+                <div class="tour-price-container">
+                    <button class="btn btn-primary float-end" @onclick="@(() => BookTour(tour))">
+                        Забронировать   
+                    </button>
+                    <div class="tour-price">@GetNormalPrice(tour)</div>
+                </div>
+
+            </div>
+        } 
+    </div>
+</div>
+
+@code {
+    public List<Tour> ToursList = DataAccess.GetTours();
+
+    bool canClickOnRow = true;
+
+    public void NewTourClick()
+    {
+        NavigationManager.NavigateTo("/tours/new");
+    }
+    public void OnRowClick(Tour tour)
+    {
+        if (canClickOnRow)
+        {
+            var options = new ModalOptions()
+                {
+                    Size = ModalSize.Large
+                };
+            var parameters = new ModalParameters()
+            .Add(nameof(TourModal.Tour), tour);
+            ModalService.Show<TourModal>("Информация о туре", parameters, options);
+        }
+        EnableRowClick();
+    }
+    public void BookTour(Tour tour)
+    {
+        DisableRowClick();
+        var parameters = new ModalParameters()
+            .Add(nameof(ToursPages.BookTour.Tour), tour);
+        ModalService.Show<BookTour>("Бронь тура", parameters);
+    }
+    public void DisableRowClick()
+    {
+        canClickOnRow = false;
+    }
+    public void EnableRowClick()
+    {
+        canClickOnRow = true;
+    }
+
+    private string GetDepartureDate(Tour tour)
+    {
+        string day = $"{tour.DepartureDate.Day}";
+        string month = $"{tour.DepartureDate.ToString("MMM")}";
+        return $"{day} {month}, {Convert.ToInt32((tour.ArrivalDate - tour.DepartureDate).TotalDays.ToString())} ночей";
+    }
+
+    public string GetNormalPrice(Tour tour)
+    {
+        return string.Format("{0:0,0.0}", Convert.ToInt32(tour.Price)).Remove(tour.Price.ToString().Length - 3, 2);
+    }
+}

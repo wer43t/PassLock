@@ -1,0 +1,83 @@
+﻿@page "/hotels/{stringId}"
+@inherits HotelModel
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @if (stringId == "new")
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <h1>Новый отель</h1>
+
+                <label for="cityId">Город</label>
+                <InputSelect id="cityId" @bind-Value="@ViewModel.CityId" class="form-control">
+                    @if (ViewModel.CityId == 0)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var city in Cities)
+                    {
+                        <option value="@city.Id">@city.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="name">Название</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else if (int.TryParse(stringId, out Id) && ViewModel.Name != null)
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <h1>Редактирование отеля</h1>
+
+                <label for="cityId">Город</label>
+                <InputSelect id="cityId" @bind-Value="@ViewModel.CityId" class="form-control">
+                    @if (ViewModel.CityId == 0)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var city in Cities)
+                    {
+                        <option value="@city.Id">@city.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="name">Название</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else
+        {
+            <Redirect Path="/cities" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string stringId { get; set; }
+    public int Id;
+
+    public List<City> Cities;
+
+    protected override void OnInitialized()
+    {
+        Cities = DataAccess.GetCities();
+
+        int.TryParse(stringId, out Id);
+        if (Id != 0)
+            ViewModel.Hotel = DataAccess.GetHotel(Id);
+    }
+
+}

@@ -1,0 +1,134 @@
+﻿@page "/tourists/{stringId}"
+@inherits TouristModel
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @if (StringId == "new")
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <h1>Новый турист</h1>
+
+                <label for="lastName">Фамилия</label>
+                <InputText id="lastName" @bind-Value="@ViewModel.LastName" class="form-control" />
+
+                <label for="firstName">Имя</label>
+                <InputText id="firstName" @bind-Value="@ViewModel.FirstName" class="form-control" />
+
+                <label for="patronymic">Отчество</label>
+                <InputText id="patronymic" @bind-Value="@ViewModel.Patronymic" class="form-control" />
+
+                <label for="passportSeries">Серия паспорта</label>
+                <InputText id="passportSeries" @bind-Value="@ViewModel.PassportSeries" class="form-control" />
+
+                <label for="passportNumber">Номер паспорта</label>
+                <InputText id="passportNumber" @bind-Value="@ViewModel.PassportNumber" class="form-control" />
+
+                <label for="registrationAddress">Адрес регистрации</label>
+                <InputText id="registrationAddress" @bind-Value="@ViewModel.RegistrationAddress" class="form-control" />
+
+                <label for="internPassportNumber">Номер загранпаспорта</label>
+                <InputText id="internPassportNumber" @bind-Value="@ViewModel.InternPassportNumber" class="form-control" />
+
+                <label for="phoneNumber">Номер телефона</label>
+                <InputText id="phoneNumber" @bind-Value="@ViewModel.PhoneNumber" class="form-control" />
+
+                <label for="email">Email</label>
+                <InputText id="email" @bind-Value="@ViewModel.Email" class="form-control" />
+
+                <label for="visaAvailabilityId">Наличие визы</label>
+                <InputSelect id="visaAvailabilityId" @bind-Value="@ViewModel.VisaAvailabilityId" class="form-control">
+                    @if (ViewModel.VisaAvailabilityId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var visaAvailability in VisaAvailabilities)
+                    {
+                        <option value="@visaAvailability.Id">@visaAvailability.Name</option>
+                    }
+                </InputSelect>
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else if (int.TryParse(StringId, out Id) && ViewModel.FirstName != null)
+        {
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <h1>Редактирование туриста</h1>
+
+                <label for="lastName">Фамилия</label>
+                <InputText id="lastName" @bind-Value="@ViewModel.LastName" class="form-control" />
+
+                <label for="firstName">Имя</label>
+                <InputText id="firstName" @bind-Value="@ViewModel.FirstName" class="form-control" />
+
+                <label for="patronymic">Отчество</label>
+                <InputText id="patronymic" @bind-Value="@ViewModel.Patronymic" class="form-control" />
+
+                <label for="passportSeries">Серия паспорта</label>
+                <InputText id="passportSeries" @bind-Value="@ViewModel.PassportSeries" class="form-control" />
+
+                <label for="passportNumber">Номер паспорта</label>
+                <InputText id="passportNumber" @bind-Value="@ViewModel.PassportNumber" class="form-control" />
+
+                <label for="registrationAddress">Адрес регистрации</label>
+                <InputText id="registrationAddress" @bind-Value="@ViewModel.RegistrationAddress" class="form-control" />
+
+                <label for="internPassportNumber">Номер загранпаспорта</label>
+                <InputText id="internPassportNumber" @bind-Value="@ViewModel.InternPassportNumber" class="form-control" />
+
+                <label for="phoneNumber">Номер телефона</label>
+                <InputText id="phoneNumber" @bind-Value="@ViewModel.PhoneNumber" class="form-control" />
+
+                <label for="email">Email</label>
+                <InputText id="email" @bind-Value="@ViewModel.Email" class="form-control" />
+
+                <label for="visaAvailabilityId">Наличие визы</label>
+                <InputSelect id="visaAvailabilityId" @bind-Value="@ViewModel.VisaAvailabilityId" class="form-control">
+                    @if (ViewModel.VisaAvailabilityId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var visaAvailability in VisaAvailabilities)
+                    {
+                        <option value="@visaAvailability.Id">@visaAvailability.Name</option>
+                    }
+                </InputSelect>
+                <p class="my-4">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </p>
+            </EditForm>
+        }
+        else
+        {
+            <Redirect Path="/tourists"/>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string StringId { get; set; }
+
+    public int Id;
+
+    public List<VisaAvailability> VisaAvailabilities { get; set; }
+
+    protected override void OnInitialized()
+    {
+        VisaAvailabilities = DataAccess.GetVisaAvailabilities();
+
+        int.TryParse(StringId, out Id);
+        if (Id != 0)
+            ViewModel.Tourist = DataAccess.GetTourist(Id);
+    }
+
+}

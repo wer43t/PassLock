@@ -1,0 +1,47 @@
+﻿@page "/me"
+
+@inherits InfoModel
+@inject ILocalStorageService LocalStoreageService
+@attribute [Authorize]
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>Об аккаунте</h1>
+
+        <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <label for="email">Email</label>
+            <InputText id="email" @bind-Value="@ViewModel.Email" class="form-control" />
+
+            <label for="login">Логин</label>
+            <InputText id="login" @bind-Value="@ViewModel.Login" class="form-control" />
+
+            <label for="password">Пароль</label>
+            <InputText id="password" @bind-Value="@ViewModel.Password" class="form-control" type="password" />
+
+            <label for="lastName">Фамилия</label>
+            <InputText id="lastName" @bind-Value="@ViewModel.LastName" class="form-control" />
+
+            <label for="firstName">Имя</label>
+            <InputText id="firstName" @bind-Value="@ViewModel.FirstName" class="form-control" />
+
+            <p class="my-4">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </p>
+        </EditForm>
+
+
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await LocalStoreageService.GetAsync<SecurityToken>(nameof(SecurityToken));
+        ViewModel.User = DataAccess.GetUser(token.Username, token.Password);;
+    }
+
+}

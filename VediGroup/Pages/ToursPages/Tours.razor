@@ -1,0 +1,90 @@
+﻿
+@attribute [Authorize]
+@inject IModalService ModalService
+@inject NavigationManager NavigationManager
+
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Туры</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewTourClick)>
+                    Добавить тур
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Страна</th>
+                    <th>Город</th>
+                    <th>Отель</th>
+                    <th>Виза</th>
+                    <th>Стоимость</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="font-weight-bold">
+                @foreach (var tour in ToursList)
+                {
+                    <tr @onclick="@(() => OnRowClick(tour))">
+                        <td>@tour.Name</td>
+                        <td>@tour.Hotel?.City.Country.Name</td>
+                        <td>@tour.Hotel?.City.Name</td>
+                        <td>@tour.Hotel?.Name</td>
+                        <td>@(tour.IsVisaNeeded? "Нужна": "Не нужна")</td>
+                        <td>@tour.Price</td>
+                        <td><button class="btn btn-info" @onclick=@(()=>BookTour(tour)) 
+                            @onfocus=@(() => DisableRowClick())
+                            @onblur=@(() => EnableRowClick())>Бронировать</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@code {
+    public List<Tour> ToursList = DataAccess.GetTours();
+
+    bool canClickOnRow = true;
+
+    public void NewTourClick()
+    {
+        NavigationManager.NavigateTo("/tours/new");
+    }
+
+    public void OnRowClick(Tour tour)
+    {
+        if (canClickOnRow)
+        {
+            var options = new ModalOptions()
+            {
+                Size = ModalSize.Large
+            };
+            var parameters = new ModalParameters()
+            .Add(nameof(TourModal.Tour), tour);
+            ModalService.Show<TourModal>("Информация о туре", parameters, options);
+        }
+    }
+    public void BookTour(Tour tour)
+    {
+        var parameters = new ModalParameters()
+            .Add(nameof(ToursPages.BookTour.Tour), tour);
+        ModalService.Show<BookTour>("Бронь тура", parameters);
+    }
+    public void DisableRowClick()
+    {
+        canClickOnRow = false;
+    }
+    public void EnableRowClick()
+    {
+        canClickOnRow = true;
+    }
+
+}

@@ -1,0 +1,221 @@
+﻿@page "/tours/{stringid}"
+@inject NavigationManager NavigationManager
+@inherits TourModel
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @if (stringId == "new")
+        {
+            <h1>Новый тур</h1>
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+                <label for="name">Название тура</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <label for="departureDate">Дата отправления</label>
+                <InputDate id="departureDate" @bind-Value="@ViewModel.DepartureDate" class="form-control" @onclick="GetTodayTime">
+                </InputDate>
+
+                <label for="arrivalDate">Дата прибытия</label>
+                <InputDate id="arrivalDate" @bind-Value="@ViewModel.ArrivalDate" class="form-control" @onclick="GetArrivalTime" />
+
+                <label for="countryId">Страна</label>
+                <InputSelect id="countryId" @bind-Value="@ViewModel.CountryId" class="form-control" @onfocusout="OnCountrySelected">
+                    @if (ViewModel.CountryId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var country in Countries)
+                    {
+                        <option value="@country.Id">@country.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="cityId">Город</label>
+                <InputSelect id="cityId" @bind-Value="@ViewModel.CityId" class="form-control" @onfocusout="OnCitySelected">
+                    @if (ViewModel.CityId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var city in Cities)
+                    {
+                        <option value="@city.Id">@city.Name</option>
+                    }
+                </InputSelect>
+
+
+
+
+                <label for="hotelId">Отель</label>
+                <InputSelect id="hotelId" @bind-Value="@ViewModel.HotelId" class="form-control">
+                    @if (ViewModel.HotelId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var hotel in Hotels)
+                    {
+                        <option value="@hotel.Id">@hotel.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="price">Цена</label>
+                <InputNumber id="price" @bind-Value="@ViewModel.Price" class="form-control" />
+
+                <label for="isVisaNeeded">Виза нужна</label>
+                <InputCheckbox id="isVisaNeeded" @bind-Value="@ViewModel.IsVisaNeeded" />
+
+            <p class="my-4">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </p>
+        </EditForm>
+        }
+        else if (int.TryParse(stringId, out Id) && ViewModel.Name != null)
+        {
+            <h1>@ViewModel.Name</h1>
+            <EditForm Model="@ViewModel" OnValidSubmit="SaveAsync" enctype="multipart/form-data">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+                <label for="name">Название тура</label>
+                <InputText id="name" @bind-Value="@ViewModel.Name" class="form-control" />
+
+                <label for="departureDate">Дата отправления</label>
+                <InputDate id="departureDate" @bind-Value="@ViewModel.DepartureDate" class="form-control" />
+
+                <label for="arrivalDate">Дата прибытия</label>
+                <InputDate id="arrivalDate" @bind-Value="@ViewModel.ArrivalDate" class="form-control" />
+                <label for="countryId">Страна</label>
+                <InputSelect id="countryId" @bind-Value="@ViewModel.CountryId" class="form-control" @onfocusout="OnCountrySelected">
+                    @if (ViewModel.CountryId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var country in Countries)
+                    {
+                        <option value="@country.Id">@country.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="cityId">Город</label>
+                <InputSelect id="cityId" @bind-Value="@ViewModel.CityId" class="form-control" @onfocusout="OnCitySelected">
+                    @if (ViewModel.CityId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var city in Cities)
+                    {
+                        <option value="@city.Id">@city.Name</option>
+                    }
+                </InputSelect>
+
+
+                <label for="hotelId">Отель</label>
+                <InputSelect  id="hotelId" @bind-Value="@ViewModel.HotelId" class="form-control" >
+                    @if (ViewModel.HotelId is null)
+                    {
+                        <option value="">Нет</option>
+                    }
+
+                    @foreach (var hotel in Hotels)
+                    {
+                        <option value="@hotel.Id">@hotel.Name</option>
+                    }
+                </InputSelect>
+
+                <label for="price">Цена</label>
+                <InputNumber id="price" @bind-Value="@ViewModel.Price" class="form-control" />
+
+                <label for="isVisaNeeded">Виза нужна</label>
+                <InputCheckbox id="isVisaNeeded" @bind-Value="@ViewModel.IsVisaNeeded" />
+
+                <label for="Image">Изображение</label>
+                <InputFile OnChange="@LoadFiles" id="image"/>
+
+            <p class="my-4">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </p>
+        </EditForm>
+        }
+        else
+        {
+            <Redirect Path="/tours"/>
+        }
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string? stringId { get; set; }
+
+    public int Id;
+
+    public List<Country> Countries { get; set; } = new List<Country>();
+
+    public List<Hotel> Hotels { get; set; } = new List<Hotel>();
+
+    public List<City> Cities { get; set; } = new List<City>();
+
+    protected override void OnInitialized()
+    {
+        Hotels = DataAccess.GetHotels();
+        Countries = DataAccess.GetCountries();
+        Cities = DataAccess.GetCities();
+        int.TryParse(stringId, out Id);
+        if (Id != 0)
+        {
+            ViewModel.Tour = DataAccess.GetTour(Id);
+            if (ViewModel.CountryId != null)
+            {
+                Cities = DataAccess.GetCities().Where(x => x.CountryId == ViewModel.CountryId).ToList();
+            }
+            if (ViewModel.CityId != null)
+            {
+                Hotels = DataAccess.GetHotels().Where(x => x.CityId == ViewModel.CityId).ToList();
+
+            }
+
+        }
+    }
+
+    private void OnCountrySelected()
+    {
+        if (ViewModel.CountryId != null)
+        {
+            Cities = DataAccess.GetCities().Where(x => x.CountryId == ViewModel.CountryId).ToList();
+        }
+    }
+
+    private void OnCitySelected()
+    {
+        if(ViewModel.CityId != null)
+        {
+            Hotels = DataAccess.GetHotels().Where(x => x.CityId == ViewModel.CityId).ToList();
+        }
+    }
+
+    private void GetTodayTime()
+    {
+        ViewModel.DepartureDate = DateTime.Now;
+    }
+
+    private void GetArrivalTime()
+    {
+        ViewModel.ArrivalDate = DateTime.Now;
+    }
+
+    public async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        var stream = file.OpenReadStream();
+
+        ViewModel.Tour.Image = new byte[stream.Length];
+
+        await stream.ReadAsync(ViewModel.Tour.Image);
+    }
+}

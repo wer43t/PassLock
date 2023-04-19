@@ -1,0 +1,51 @@
+﻿@page "/hotels"
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Отели</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewCountryClick)>
+                    Добавить отель
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Город</th>
+                    <th>Страна</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var hotel in HotelsList)
+                {
+                    <tr @onclick="@(() => OnRowClick(hotel))">
+                        <td>@hotel.Name</td>
+                        <td>@hotel.City.Name</td>
+                        <td>@hotel.City.Country.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<Hotel> HotelsList = DataAccess.GetHotels();
+
+    public void NewCountryClick()
+    {
+        NavigationManager.NavigateTo("/hotels/new");
+    }
+
+    public void OnRowClick(Hotel hotel)
+    {
+        NavigationManager.NavigateTo($"/hotels/{hotel.Id}");
+    }
+}

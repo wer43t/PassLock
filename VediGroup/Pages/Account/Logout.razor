@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@using VediGroup.Provider;
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider Provider
+
+<h3>Logout</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ((CustomAuthStateProvider)Provider).Logout();
+        NavigationManager.NavigateTo("/", true);
+    }
+}

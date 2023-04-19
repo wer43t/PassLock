@@ -1,0 +1,15 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <div class="login-bar">
+            <a href="/me">Привет, @context.User.Identity?.Name!</a>
+            <form action="/logout">
+                <button type="submit" class="nav-link btn btn-link">Выйти</button>
+            </form>
+       </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="login-bar px-1">
+            <a href="login">Войти</a>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

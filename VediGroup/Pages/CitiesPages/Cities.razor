@@ -1,0 +1,47 @@
+﻿@page "/cities"
+@attribute [Authorize]
+@inject NavigationManager NavigationManager
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <div class="row mb-2">
+            <div class="col">
+                <h3 class="font-weight-bold">Города</h3>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary float-end" @onclick=@(NewCityClick)>
+                    Добавить город
+                </button>
+            </div>
+        </div>
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var city in CitiesList)
+                {
+                    <tr @onclick="@(() => OnRowClick(city))">
+                        <td>@city.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<City> CitiesList = DataAccess.GetCities();
+
+    public void NewCityClick()
+    {
+        NavigationManager.NavigateTo("/cities/new");
+    }
+
+    public void OnRowClick(City city)
+    {
+        NavigationManager.NavigateTo($"/cities/{city.Id}");
+    }
+}
