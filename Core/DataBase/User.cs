@@ -14,14 +14,19 @@ namespace Core.DataBase
     
     public partial class User
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public Nullable<int> RoleId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public User()
+        {
+            this.Logins = new HashSet<Login>();
+        }
     
+        public int id { get; set; }
+        public string login { get; set; }
+        public string password { get; set; }
+        public Nullable<int> id_role { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Login> Logins { get; set; }
         public virtual Role Role { get; set; }
     }
 }

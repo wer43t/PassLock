@@ -21,11 +21,11 @@ namespace VediGroup.Pages.Account
         {
             var user = new User
             {
-                Login = ViewModel.Username,
-                Password = ViewModel.Password,
-                Email = ViewModel.Email,
-                FirstName = ViewModel.FirstName,
-                LastName = ViewModel.LastName,
+                login = ViewModel.Username,
+                password = ViewModel.Password,
+                //Email = ViewModel.Email,
+                //FirstName = ViewModel.FirstName,
+                //LastName = ViewModel.LastName,
                 Role = DataAccess.GetRole("Manager")
             };
 

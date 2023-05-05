@@ -23,8 +23,8 @@ namespace VediGroup.Pages.Account
 
             var token = new SecurityToken
             {
-                Username = ViewModel.User.Login,
-                Password = ViewModel.User.Password,
+                Username = ViewModel.User.login,
+                Password = ViewModel.User.password,
             };
 
             await LocalStorageService.SetAsync(nameof(SecurityToken), token);

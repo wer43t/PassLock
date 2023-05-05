@@ -27,7 +27,7 @@ namespace VediGroup.Provider
                 {
                     new Claim(ClaimTypes.Country, "Russia"),
                     new Claim(ClaimTypes.Name, token.Username),
-                    new Claim(ClaimTypes.Role, dbUser?.Role?.Name ?? "None"),
+                    new Claim(ClaimTypes.Role, dbUser?.Role?.name ?? "None"),
                 };
 
                 identity = new ClaimsIdentity(claims, "Token");
