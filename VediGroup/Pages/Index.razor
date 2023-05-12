@@ -1,29 +1,35 @@
 ﻿@page "/"
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
+@inject IModalService ModalService
 
 <PageTitle>Index</PageTitle>
 
+<button class="btn btn-primary" @onclick=@(NewLoginClick)>
+    Добавить
+</button>
+
 <div class="card m-3 table-briefs border-0">
     <div class="card-body m-2">
-        <div class="row mb-2">
-            <div class="col">
-                <button class="btn btn-primary" @onclick=@(NewCountryClick)>
-                    Добавить    
-                </button>
-            </div>
-        </div>
         <table class="tours-table">
             <thead>
                 <tr>
                     <th>ITEM NAME</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var hotel in LoginsList)
+                @foreach (var login in LoginsList)
                 {
-                    <tr @onclick="@(() => OnRowClick(hotel))">
-                        <td>@hotel.website</td>
+                    <tr @onclick="@(() => OnRowClick(login))">
+                        <td width="500px">@login.website</td>
+                        <td>
+                            <div class="action-container">
+                                <button>
+                                        Открыть страницу
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -34,13 +40,25 @@
 @code {
     public List<Login> LoginsList = DataAccess.GetLogins();
 
-    public void NewCountryClick()
+    public void NewLoginClick()
     {
-        NavigationManager.NavigateTo("/hotels/new");
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(Password.AddPasswordModal.Login), new Login());
+        ModalService.Show<Password.AddPasswordModal>("Добавить новые данные", parameters, options);
     }
 
     public void OnRowClick(Login login)
     {
-        NavigationManager.NavigateTo($"/hotels/{login.id}");
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(Password.AddPasswordModal.Login), login);
+        ModalService.Show<Password.AddPasswordModal>(login.item_name.ToString(), parameters, options);
     }
 }

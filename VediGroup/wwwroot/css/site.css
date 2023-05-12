@@ -14,27 +14,30 @@
 
     .tours-table td {
         padding: 5px 10px;
-        border: 1px solid #eee;
-        text-align: center;
+        border-bottom: 1px solid #ebe9e7;
+        text-align: left;
+        margin: 50px 0px 0px 0px;
     }
     .tours-table th {
         font-weight: bold;
-        padding: 5px;
+        padding: 0px 0px 10px 10px;
         background: #efefef;
-        border: 1px solid #dddddd;
+        border-bottom: 1px solid #ebe9e7;
+        font-size: 24px;
     }
 
     .tours-table thead tr {
-        font-size: 10px;
+        font-weight: 600;
+        font-size: 12px;
         color: #A0AEC0;
     }
 
 .tours-table thead tr th {
-    text-align: center;
+    text-align: left;
 }
 
 .tours-table tbody tr {
-    font-size: 14px;
+    font-size: 24px;
 }
 
 .tours-table tbody tr:hover {
@@ -76,7 +79,8 @@
     }
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Public Sans', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+    
 }
 
 body {

@@ -26,5 +26,6 @@ namespace VediGroup.Pages.Password
         public string item_name { get => Login.item_name; set { Login.item_name = value; } }
         public string note { get => Login.note; set {  Login.note = value; } }
         public string password { get => Login.password; set { Login.password = value; } }
+        public string email { get => Login.email; set { Login.email = value; } }
     }
 }

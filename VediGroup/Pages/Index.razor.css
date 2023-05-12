@@ -9,3 +9,16 @@ img {
     width: 50%;
     margin-bottom: 30px;
 }
+
+.action-container {
+    width: 210px;
+    text-align: center;
+}
+
+.action-container:hover {
+    border: 1px solid #1861ac;
+}
+
+.action-container button{
+    border: none;
+}
