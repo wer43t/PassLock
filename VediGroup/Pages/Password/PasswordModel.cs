@@ -17,7 +17,6 @@ namespace VediGroup.Pages.Password
 
         public async Task SaveAsync()
         {
-
             DataAccess.SaveLogin(ViewModel.Login);
             NavigationManager.NavigateTo("/", true);
         }

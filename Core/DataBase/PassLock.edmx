@@ -4,7 +4,15 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="Хранилище PassLockModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Хранилище PassLockModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="300" />
+          <Property Name="binary_data" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="Logins">
           <Key>
             <PropertyRef Name="id" />
@@ -17,6 +25,23 @@
           <Property Name="note" Type="nvarchar" MaxLength="300" />
           <Property Name="user_id" Type="int" />
           <Property Name="email" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="NoteFiles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="file_id" Type="int" />
+          <Property Name="note_id" Type="int" />
+        </EntityType>
+        <EntityType Name="Notes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="note" Type="nvarchar" MaxLength="1000" />
+          <Property Name="user_id" Type="int" />
+          <Property Name="item_name" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -56,6 +81,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_NoteFiles_Files">
+          <End Role="Documents" Type="Self.Documents" Multiplicity="0..1" />
+          <End Role="NoteFiles" Type="Self.NoteFiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NoteFiles">
+              <PropertyRef Name="file_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NoteFiles_Notes">
+          <End Role="Notes" Type="Self.Notes" Multiplicity="0..1" />
+          <End Role="NoteFiles" Type="Self.NoteFiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Notes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NoteFiles">
+              <PropertyRef Name="note_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notes_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Notes" Type="Self.Notes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notes">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Role">
           <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
@@ -69,7 +130,10 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Хранилище PassLockModelContainer">
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NoteFiles" EntityType="Self.NoteFiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notes" EntityType="Self.Notes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -77,15 +141,37 @@
             <End Role="User" EntitySet="User" />
             <End Role="Logins" EntitySet="Logins" />
           </AssociationSet>
+          <AssociationSet Name="FK_NoteFiles_Files" Association="Self.FK_NoteFiles_Files">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="NoteFiles" EntitySet="NoteFiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NoteFiles_Notes" Association="Self.FK_NoteFiles_Notes">
+            <End Role="Notes" EntitySet="Notes" />
+            <End Role="NoteFiles" EntitySet="NoteFiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notes_User" Association="Self.FK_Notes_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Notes" EntitySet="Notes" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
             <End Role="Role" EntitySet="Role" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PassLockModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="binary_data" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="NoteFiles" Relationship="Self.FK_NoteFiles_Files" FromRole="Documents" ToRole="NoteFiles" />
+        </EntityType>
         <EntityType Name="Login">
           <Key>
             <PropertyRef Name="id" />
@@ -97,8 +183,29 @@
           <Property Name="item_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="note" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="user_id" Type="Int32" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Logins_User" FromRole="Logins" ToRole="User" />
           <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Logins_User" FromRole="Logins" ToRole="User" />
+        </EntityType>
+        <EntityType Name="NoteFile">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="file_id" Type="Int32" />
+          <Property Name="note_id" Type="Int32" />
+          <NavigationProperty Name="Document" Relationship="Self.FK_NoteFiles_Files" FromRole="NoteFiles" ToRole="Documents" />
+          <NavigationProperty Name="Note" Relationship="Self.FK_NoteFiles_Notes" FromRole="NoteFiles" ToRole="Notes" />
+        </EntityType>
+        <EntityType Name="Note">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="note1" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="user_id" Type="Int32" />
+          <Property Name="item_name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="NoteFiles" Relationship="Self.FK_NoteFiles_Notes" FromRole="Notes" ToRole="NoteFiles" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Notes_User" FromRole="Notes" ToRole="User" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -127,8 +234,21 @@
           <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="id_role" Type="Int32" />
           <NavigationProperty Name="Logins" Relationship="Self.FK_Logins_User" FromRole="User" ToRole="Logins" />
+          <NavigationProperty Name="Notes" Relationship="Self.FK_Notes_User" FromRole="User" ToRole="Notes" />
           <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
         </EntityType>
+        <Association Name="FK_NoteFiles_Files">
+          <End Role="Documents" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="NoteFiles" Type="Self.NoteFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Documents">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NoteFiles">
+              <PropertyRef Name="file_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Logins_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Logins" Type="Self.Login" Multiplicity="*" />
@@ -137,6 +257,30 @@
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="Logins">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NoteFiles_Notes">
+          <End Role="Notes" Type="Self.Note" Multiplicity="0..1" />
+          <End Role="NoteFiles" Type="Self.NoteFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Notes">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="NoteFiles">
+              <PropertyRef Name="note_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notes_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Notes" Type="Self.Note" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Notes">
               <PropertyRef Name="user_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -154,13 +298,28 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="PassLockEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Documents" EntityType="Self.Document" />
           <EntitySet Name="Logins" EntityType="Self.Login" />
+          <EntitySet Name="NoteFiles" EntityType="Self.NoteFile" />
+          <EntitySet Name="Notes" EntityType="Self.Note" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_NoteFiles_Files" Association="Self.FK_NoteFiles_Files">
+            <End Role="Documents" EntitySet="Documents" />
+            <End Role="NoteFiles" EntitySet="NoteFiles" />
+          </AssociationSet>
           <AssociationSet Name="FK_Logins_User" Association="Self.FK_Logins_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Logins" EntitySet="Logins" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NoteFiles_Notes" Association="Self.FK_NoteFiles_Notes">
+            <End Role="Notes" EntitySet="Notes" />
+            <End Role="NoteFiles" EntitySet="NoteFiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notes_User" Association="Self.FK_Notes_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Notes" EntitySet="Notes" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
             <End Role="Role" EntitySet="Roles" />
@@ -173,10 +332,18 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="Хранилище PassLockModelContainer" CdmEntityContainer="PassLockEntities">
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="PassLockModel.Document">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="binary_data" ColumnName="binary_data" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Logins">
             <EntityTypeMapping TypeName="PassLockModel.Login">
               <MappingFragment StoreEntitySet="Logins">
-                <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="website" ColumnName="website" />
                 <ScalarProperty Name="username" ColumnName="username" />
@@ -184,6 +351,26 @@
                 <ScalarProperty Name="item_name" ColumnName="item_name" />
                 <ScalarProperty Name="note" ColumnName="note" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NoteFiles">
+            <EntityTypeMapping TypeName="PassLockModel.NoteFile">
+              <MappingFragment StoreEntitySet="NoteFiles">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="file_id" ColumnName="file_id" />
+                <ScalarProperty Name="note_id" ColumnName="note_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notes">
+            <EntityTypeMapping TypeName="PassLockModel.Note">
+              <MappingFragment StoreEntitySet="Notes">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="note1" ColumnName="note" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="item_name" ColumnName="item_name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

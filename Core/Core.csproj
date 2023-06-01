@@ -54,7 +54,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess.cs" />
+    <Compile Include="DataBase\Document.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\Login.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Note.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\NoteFile.cs">
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\PassLock.Context.cs">

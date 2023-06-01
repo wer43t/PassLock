@@ -25,7 +25,10 @@ namespace Core.DataBase
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Document> Documents { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
+        public virtual DbSet<NoteFile> NoteFiles { get; set; }
+        public virtual DbSet<Note> Notes { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }

@@ -1,0 +1,65 @@
+﻿@page "/notes"
+@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+<PageTitle>Заметки</PageTitle>
+
+<button class="btn btn-primary" @onclick=@(NewLoginClick)>
+    Добавить
+</button>
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <table class="tours-table">
+            <thead>
+                <tr>
+                    <th>ITEM NAME</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var note in NotesList)
+                {
+                    <tr @onclick="@(() => OnRowClick(note))">
+                        <td width="500px">@note.item_name</td>
+                        <td>
+                            <div class="action-container">
+                                <button>
+                                    Открыть страницу
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    public List<Note> NotesList = DataAccess.GetNotes();
+
+
+    public void NewLoginClick()
+    {
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(NotesPages.NoteInfoModal.Note), new Note());
+        ModalService.Show<NotesPages.NoteInfoModal>("Добавить новые данные", parameters, options);
+    }
+
+    public void OnRowClick(Note note)
+    {
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(NotesPages.NoteInfoModal.Note), note);
+        ModalService.Show<NotesPages.NoteInfoModal>(note.item_name.ToString(), parameters, options);
+    }
+
+
+}

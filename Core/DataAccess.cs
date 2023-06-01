@@ -2,22 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Security.Cryptography;
 using System.Linq;
 
 namespace Core
 {
     public class DataAccess
     {
+        public static User CurrentUser { get; internal set; }
 
         public static List<User> GetUsers() => PassLockEntities.GetContext().Users.ToList();
         public static List<Role> GetRoles() => PassLockEntities.GetContext().Roles.ToList();
         public static List<Login> GetLogins() => PassLockEntities.GetContext().Logins.ToList();
+        public static List<Note> GetNotes() => PassLockEntities.GetContext().Notes.Where(x => x.user_id == CurrentUser.id).ToList();
+        public static List<Document> GetDocuments() => PassLockEntities.GetContext().Documents.ToList();
 
         public static Role GetRole(string name) => GetRoles().FirstOrDefault(x => x.name == name);
 
         public static User GetUser(string login, string password)
         {
-            return GetUsers().FirstOrDefault(x => x.login == login && x.password == password);
+            CurrentUser = GetUsers().FirstOrDefault(x => x.login == login && x.password == password);
+            return CurrentUser;
         }
 
         public static void SaveUser(User user)
@@ -30,8 +35,11 @@ namespace Core
 
         public static void SaveLogin(Login login)
         {
-            if(login.id == 0) 
+            if(login.id == 0)
+            {
+                login.user_id = CurrentUser.id;
                 PassLockEntities.GetContext().Logins.Add(login);
+            } 
 
             PassLockEntities.GetContext().SaveChanges();
         }
@@ -42,5 +50,61 @@ namespace Core
                 PassLockEntities.GetContext().Logins.Remove(login);
             PassLockEntities.GetContext().SaveChanges();
         }
+
+        public static int SaveNote(Note note)
+        {
+            if (note.id == 0)
+            {
+                note.user_id = CurrentUser.id;
+                PassLockEntities.GetContext().Notes.Add(note);
+            }
+            PassLockEntities.GetContext().SaveChanges();
+            return note.id;
+        }
+
+        public static void RemoveNote(Note note)
+        {
+            if (note.id != 0)
+                PassLockEntities.GetContext().Notes.Remove(note);
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static int SaveDocument(Document document)
+        {
+            if (document.id == 0)
+                PassLockEntities.GetContext().Documents.Add(document);
+            PassLockEntities.GetContext().SaveChanges();
+            return document.id;
+        }
+
+        public static void RemoveDocuments(Document document)
+        {
+            if (document.id != 0)
+                PassLockEntities.GetContext().Documents.Remove(document);
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void SaveNoteFiles(NoteFile noteFile)
+        {
+            if (noteFile.id == 0)
+                PassLockEntities.GetContext().NoteFiles.Add(noteFile);
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void RemoveNoteFiles(Document document)
+        {
+            if (document.id != 0)
+                PassLockEntities.GetContext().NoteFiles.RemoveRange(document.NoteFiles);
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static string GetRandomPassword(int length = 16)
+        {
+            byte[] rgb = new byte[length];
+            RNGCryptoServiceProvider rngCrypt = new RNGCryptoServiceProvider();
+            rngCrypt.GetBytes(rgb);
+            return Convert.ToBase64String(rgb);
+        }
+
     }
 }

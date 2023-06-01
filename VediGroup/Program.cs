@@ -25,6 +25,7 @@ builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
+builder.Services.AddScoped<IClipboardService, ClipboardService>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredModal();
 

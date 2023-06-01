@@ -6,3 +6,56 @@
 }
 
 <component type="typeof(App)" render-mode="Server" />
+
+<body>
+    ...
+
+    <script src="_framework/blazor.{server|webassembly}.js"></script>
+    <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        window.clearFile = () => {
+            var control = $("#InputFiles");
+
+            control.replaceWith(control = control.clone(true));
+        }
+
+        function showDropDown(id) {
+            let str = "myDropdown " + id;
+            document.getElementById(str).classList.toggle("show");
+        }
+
+         //Close the dropdown menu if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        function copyUserName(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Alert the user that the action took place.
+                // Nobody likes hidden stuff being done under the hood!
+                alert("Copied to clipboard");
+            });
+        }
+    </script>
+</body>

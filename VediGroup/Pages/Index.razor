@@ -2,8 +2,16 @@
 @attribute [Authorize]
 @inject NavigationManager NavigationManager
 @inject IModalService ModalService
+@inject IJSRuntime JS
+@inject IClipboardService ClipboardService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Пароли</PageTitle>
+
+<div class="@PasswordsDeleteVisibility">
+    <span>@CountForDelete</span>
+    <button>Удалить</button>
+</div>
+
 
 <button class="btn btn-primary" @onclick=@(NewLoginClick)>
     Добавить
@@ -14,20 +22,34 @@
         <table class="tours-table">
             <thead>
                 <tr>
+                    <th></th>
                     <th>ITEM NAME</th>
+                    <th></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var login in LoginsList)
                 {
-                    <tr @onclick="@(() => OnRowClick(login))">
-                        <td width="500px">@login.website</td>
+                    
+                    <tr>
+                        <td><input type="checkbox" @onclick="@(() => AddToRemoveList(login))"> </td>
+                        <td @onclick="@(() => OnRowClick(login))" width="500px">@login.website</td>
                         <td>
                             <div class="action-container">
                                 <button>
                                         Открыть страницу
                                 </button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button @onclick="@(() => ShowDropDown(login.id))" class="dropbtn">...</button>
+                                <div id="myDropdown @login.id" class="dropdown-content">
+                                    <button @onclick="@(() => OnRowClick(login))">Подробнее</button>
+                                    <button @onclick="@(() => CopyUsername(login.username))">Скопировать пользователя</button>
+                                    <button @onclick="@(() => CopyUsername(login.password))">Скопировать пароль</button>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -39,6 +61,19 @@
 
 @code {
     public List<Login> LoginsList = DataAccess.GetLogins();
+
+    public List<Login> LoginsForDelete = new List<Login>();
+
+    private string CountForDelete;
+
+    private bool state = true;
+
+    private string PasswordsDeleteVisibility => state ? "passwords-delete" : "passwords-delete visible";
+
+    private void ChangeVisibility()
+    {
+        state = !state;
+    }
 
     public void NewLoginClick()
     {
@@ -61,4 +96,38 @@
         .Add(nameof(Password.AddPasswordModal.Login), login);
         ModalService.Show<Password.AddPasswordModal>(login.item_name.ToString(), parameters, options);
     }
+
+    private async Task ShowDropDown(int id)
+    {
+        await JS.InvokeVoidAsync("showDropDown", id);
+    }
+
+    private async Task CopyUsername(string Text)
+    {
+        await ClipboardService.CopyToClipboard(Text);
+    }
+
+    private void AddToRemoveList(Login login)
+    {
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        if (LoginsForDelete.Contains(login))
+            LoginsForDelete.Remove(login);
+        else
+            LoginsForDelete.Add(login);
+        if(LoginsForDelete.Count() != 0)
+        {
+            state = false;
+            CountForDelete = "Выбрано " + LoginsForDelete.Count() + " паролей";
+        }
+        else
+        {
+            state = true;
+        }
+    }
+
+
+    
 }

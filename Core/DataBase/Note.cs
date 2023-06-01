@@ -12,24 +12,21 @@ namespace Core.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Note
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Note()
         {
-            this.Logins = new HashSet<Login>();
-            this.Notes = new HashSet<Note>();
+            this.NoteFiles = new HashSet<NoteFile>();
         }
     
         public int id { get; set; }
-        public string login { get; set; }
-        public string password { get; set; }
-        public Nullable<int> id_role { get; set; }
+        public string note1 { get; set; }
+        public Nullable<int> user_id { get; set; }
+        public string item_name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Login> Logins { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Note> Notes { get; set; }
-        public virtual Role Role { get; set; }
+        public virtual ICollection<NoteFile> NoteFiles { get; set; }
+        public virtual User User { get; set; }
     }
 }

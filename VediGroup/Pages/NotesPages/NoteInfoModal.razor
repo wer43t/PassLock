@@ -1,0 +1,170 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+@inject IJSRuntime JS
+
+
+
+<div class="container">
+
+    <div class="items">
+        <div>
+            <input @bind-value="Note.item_name" placeholder="Напиши название своей заметки здесь..."/>
+            <input @bind-value="Note.note1" placeholder="Напишите свою заметку здесь..." />
+        </div>
+        <div class="documents">
+            <ol>
+
+
+            @foreach(var d in GetDocumentsNote())
+            {
+                <li>
+                <div class="document">
+                    <label class="label-document">
+                        @d.name
+                    </label>
+                    <div class="document-download">
+                        <svg aria-hidden="true" @onclick="(() => DownloadFileFromStream(d.id))" aria-label="Download" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" version="1.1" class="ui-components-h0oshn"><title>Download</title><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5 16.5V10H2V18H18V10H16.5V16.5H3.5Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M10 13.0607L6.46967 9.53033L7.53033 8.46967L9.25 10.1893L9.25 2L10.75 2V10.1893L12.4697 8.46967L13.5303 9.53033L10 13.0607Z"></path></svg>
+                    </div>
+                    <div class="document-download">
+                        <svg aria-hidden="true" aria-label="Delete" @onclick="(() => RemoveFile(d))" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" version="1.1" class="ui-components-h0oshn"><title>Delete</title><path d="M6 3.5V2H14V3.5H6Z"></path><path d="M17 6.5V5H3V6.5H4V18H13L12 16.5H5.5V6.5H14.5V18H16V6.5H17Z"></path><path d="M12.5 9H11V14L12.5 13V9Z"></path><path d="M9 9H7.5V14L9 13V9Z"></path></svg>
+                    </div>
+                </div>
+                </li>
+            }
+            </ol>
+            @if (isLoading)
+            {
+                <p>Progress: @string.Format("{0:P0}", progressPercent)</p>
+                
+            }
+        </div>
+    </div>
+    <div class="buttons">
+        <div>
+            <button class="btn" onclick="@Remove">Удалить</button>
+            <InputFile OnChange="@LoadFiles" class="btn" multiple id="InputFiles">Добавить файлы</InputFile>
+        </div>
+        <div>
+            <button class="btn" onclick="@Save"> Сохранить</button>
+        </div>
+    </div>
+
+
+</div>
+
+
+@code {
+    [Parameter]
+    public Note Note { get; set; }
+
+    private bool isLoading;
+    private decimal progressPercent;
+
+    public delegate void ProcentChange();
+    public event ProcentChange ProcentChangeEvent;
+
+    public List<Document> GetDocumentsNote()
+    {
+        var documents = new List<Document>();
+
+        if(Note.id != 0)
+        {
+            foreach(var d in Note.NoteFiles)
+            {
+                documents.Add(d.Document);
+            }
+        }
+        return documents;
+    }
+
+    public void RemoveFile(Document document)
+    {
+        DataAccess.RemoveNoteFiles(document);
+        DataAccess.RemoveDocuments(document);
+    }
+
+    public void Save()
+    {
+        DataAccess.SaveNote(Note);
+        this.NavigationManager.NavigateTo("/notes", true);
+    }
+
+    public void Remove()
+    {
+        var parameters = new ModalParameters()
+        .Add(nameof(DeleteNoteModal.note), Note);
+
+        ModalService.Show<DeleteNoteModal>("Вы действительно хотите удалить заметку?", parameters);
+    }
+
+    public async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        progressPercent = 0;
+
+        
+
+        foreach(var file in e.GetMultipleFiles())
+        {
+
+
+
+            var stream = file.OpenReadStream(10268343 * 10);
+            Document dbFile = new Document();
+            dbFile.binary_data = new byte[stream.Length];
+            var writeStream = new MemoryStream(dbFile.binary_data);
+
+
+            var bytesRead = 0;
+            var totalRead = 0;
+            var buffer = new byte[4096];
+
+
+            while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+            {
+                totalRead += bytesRead;
+
+                await writeStream.WriteAsync(buffer, 0, bytesRead);
+                progressPercent = Decimal.Divide(totalRead, file.Size);
+
+                StateHasChanged();
+            }
+
+            //Document dbFile = new Document();
+            dbFile.name = file.Name;
+            await writeStream.ReadAsync(dbFile.binary_data);
+
+            //await stream.ReadAsync(dbFile.binary_data);
+
+            int noteId = DataAccess.SaveNote(Note);
+            int documentId = DataAccess.SaveDocument(dbFile);
+            DataAccess.SaveNoteFiles(new NoteFile { file_id = documentId, note_id = noteId });
+        }
+
+        isLoading = false;
+
+
+
+
+    }
+
+    private Stream GetFileStream(int id)
+    {
+        var randomBinaryData = DataAccess.GetDocuments().Where(x => x.id == id).FirstOrDefault().binary_data;
+        var fileStream = new MemoryStream(randomBinaryData);
+
+        return fileStream;
+    }
+
+    private async Task DownloadFileFromStream(int id)
+    {
+        var fileStream = GetFileStream(id);
+        var fileName = DataAccess.GetDocuments().Where(x => x.id == id).FirstOrDefault().name;
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+
+}
+

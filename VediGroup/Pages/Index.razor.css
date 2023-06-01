@@ -11,7 +11,6 @@ img {
 }
 
 .action-container {
-    width: 210px;
     text-align: center;
 }
 
@@ -21,4 +20,83 @@ img {
 
 .action-container button{
     border: none;
+}
+
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+    /* Dropdown button on hover & focus */
+    .dropbtn:hover, .dropbtn:focus {
+        background-color: #2980B9;
+    }
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #212529;
+    width: 130px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+    /* Links inside the dropdown */
+    .dropdown-content button {
+        width: 100%;
+        color: black;
+        padding: 12px 16px;
+        font-size: 12px;
+        text-decoration: none;
+        display: block;
+        background-color: #212529;
+        color: white;
+    }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content button:hover {
+            background-color: #ddd
+        }
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+    display: block;
+}
+
+.passwords-delete {
+    position: sticky;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 50;
+    display: flex;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+    padding: 10px 16px;
+    margin: 8px;
+    border-radius: 8px;
+    background-color: inherit;
+    background-image: linear-gradient(rgba(162, 163, 163, 0.2) 100%, white);
+    transform: scale3d(1, 1, 1);
+    transform-origin: center top;
+    visibility: hidden;
+    transition: all 250ms ease 0s;
+}
+
+.visible{
+    visibility: visible;
 }

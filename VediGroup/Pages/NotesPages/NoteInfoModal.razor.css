@@ -1,0 +1,31 @@
+﻿body {
+}
+
+.documents{
+    display: flex;
+    flex-direction: column;
+}
+
+.document{
+    width: 100%;
+    display: flex;
+    margin-top: 15px;
+    align-items: baseline;
+}
+
+.label-document {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.document-download{
+    width: 32px;
+    height: 32px;
+}
+
+    .document-download:hover {
+        border: 1px solid black;
+        background-color: #0085ff;
+    }
