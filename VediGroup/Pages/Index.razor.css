@@ -12,22 +12,26 @@ img {
 
 .action-container {
     text-align: center;
+    visibility: hidden;
 }
 
-.action-container:hover {
-    border: 1px solid #1861ac;
-}
+    .action-container:hover {
+        border: 1px solid #1861ac;
+        visibility: visible;
+    }
 
 .action-container button{
     border: none;
+    visibility: hidden;
 }
 
 
 /* Dropdown Button */
 .dropbtn {
-    background-color: #3498DB;
+    background-color: transparent;
     color: white;
     padding: 16px;
+    text-align: center;
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -35,7 +39,7 @@ img {
 
     /* Dropdown button on hover & focus */
     .dropbtn:hover, .dropbtn:focus {
-        background-color: #2980B9;
+        border: 1px solid #2d2d2d
     }
 
 /* The container <div> - needed to position the dropdown content */
@@ -90,13 +94,27 @@ img {
     margin: 8px;
     border-radius: 8px;
     background-color: inherit;
-    background-image: linear-gradient(rgba(162, 163, 163, 0.2) 100%, white);
+    background-image: linear-gradient(rgba(162, 163, 163, 50) 100%, white);
     transform: scale3d(1, 1, 1);
     transform-origin: center top;
-    visibility: hidden;
+    visibility: collapse;
     transition: all 250ms ease 0s;
 }
 
 .visible{
     visibility: visible;
+}
+
+.flex-row {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 0px 2px;
+}
+
+.flex-row svg{
+    width: 16px;
 }

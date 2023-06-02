@@ -56,6 +56,10 @@ namespace Core
             if (note.id == 0)
             {
                 note.user_id = CurrentUser.id;
+                if(note.item_name != null)
+                {
+                    note.item_name = "Новая заметка без названия";
+                }
                 PassLockEntities.GetContext().Notes.Add(note);
             }
             PassLockEntities.GetContext().SaveChanges();

@@ -13,7 +13,6 @@
             <thead>
                 <tr>
                     <th>ITEM NAME</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -21,13 +20,6 @@
                 {
                     <tr @onclick="@(() => OnRowClick(note))">
                         <td width="500px">@note.item_name</td>
-                        <td>
-                            <div class="action-container">
-                                <button>
-                                    Открыть страницу
-                                </button>
-                            </div>
-                        </td>
                     </tr>
                 }
             </tbody>
