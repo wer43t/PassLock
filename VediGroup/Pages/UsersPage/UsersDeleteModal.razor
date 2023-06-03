@@ -1,0 +1,46 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+
+
+
+@if(Users.Count > 1)
+{
+    <p class="notify">
+        Вы действительно хотите удалить этих пользователей? Они потеряют доступ к паролям.
+    </p>
+}
+else
+{
+    <p class="notify">
+        Вы действительно хотите этого пользователя? @Users.FirstOrDefault().login потеряет доступ к паролям.
+    </p>
+}
+
+
+<div class="row">
+    <button class="btn btn-secondary col mx-4" @onclick=CancelClick>Отмена</button>
+    <button class="btn btn-danger col mx-4" @onclick=DeleteClick>Удалить</button>
+</div>
+
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public List<Core.DataBase.User> Users { get; set; }
+
+    public void DeleteClick()
+    {
+        foreach (var user in Users)
+        {
+            DataAccess.RemoveUser(user);
+        }
+        NavigationManager.NavigateTo($"/", true);
+    }
+
+    public void CancelClick()
+    {
+        ModalInstance.CloseAsync();
+    }
+}

@@ -14,6 +14,7 @@ namespace Core
         public static List<User> GetUsers() => PassLockEntities.GetContext().Users.ToList();
         public static List<Role> GetRoles() => PassLockEntities.GetContext().Roles.ToList();
         public static List<Login> GetLogins() => PassLockEntities.GetContext().Logins.ToList();
+        public static List<Login> GetUserLogins(int id) => GetLogins().Where(x => x.user_id == id).ToList();
         public static List<Note> GetNotes() => PassLockEntities.GetContext().Notes.Where(x => x.user_id == CurrentUser.id).ToList();
         public static List<Document> GetDocuments() => PassLockEntities.GetContext().Documents.ToList();
 
@@ -30,6 +31,15 @@ namespace Core
             if (user.id == 0)
                 PassLockEntities.GetContext().Users.Add(user);
 
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void RemoveUser(User user)
+        {
+            if(user.id != 0)
+            {
+                PassLockEntities.GetContext().Users.Remove(user);
+            }
             PassLockEntities.GetContext().SaveChanges();
         }
 

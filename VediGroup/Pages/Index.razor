@@ -69,7 +69,7 @@
 </div>
 
 @code {
-    public List<Login> LoginsList = DataAccess.GetLogins();
+    public List<Login> LoginsList = DataAccess.GetUserLogins(DataAccess.CurrentUser.id);
 
     public List<Login> LoginsForDelete = new List<Login>();
 
