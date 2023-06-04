@@ -77,8 +77,8 @@
                                     </span>
                                     <div id="myDropdown @user.id" class="dropdown-content">
                                         <button @onclick="@(() => DeleteOneModal(user))">Удалить</button>
-    @*                                    <button @onclick="@(() => CopyUsername(login.username))">Скопировать пользователя</button>
-                                        <button @onclick="@(() => CopyUsername(login.password))">Скопировать пароль</button>
+                                        <button @onclick="@(() => EditUserModal(user))">Редактировать</button>
+    @*                                    <button @onclick="@(() => CopyUsername(login.password))">Скопировать пароль</button>
                                         <button @onclick="@(() => OpenInNewTab(login.website))">Открыть сайт</button>*@
                                     </div>
                                 </div>
@@ -171,7 +171,26 @@
 
     private void NewUser()
     {
-        
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(UsersPage.UserAddModal.User), new Core.DataBase.User { id_role = 2 });
+        parameters.Add(nameof(UsersPage.UserAddModal.isNew), true);
+        ModalService.Show<UsersPage.UserAddModal>($"Добавление пользователя", parameters, options);
+    }
+
+    private void EditUserModal(Core.DataBase.User user)
+    {
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(UsersPage.UserAddModal.User), user);
+        parameters.Add(nameof(UsersPage.UserAddModal.isNew), false);
+        ModalService.Show<UsersPage.UserAddModal>($"Редактирование пользователя", parameters, options);
     }
 
 

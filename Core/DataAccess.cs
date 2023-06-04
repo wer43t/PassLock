@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Security.Cryptography;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Net.Mail;
 
 namespace Core
 {
@@ -26,12 +28,29 @@ namespace Core
             return CurrentUser;
         }
 
+        public static bool CheckLogin(User user) => PassLockEntities.GetContext().Users.Where(x => x.login == user.login).Count() == 0;
+
         public static void SaveUser(User user)
         {
             if (user.id == 0)
                 PassLockEntities.GetContext().Users.Add(user);
 
             PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static bool CheckEmail(User user)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(user.login);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        
         }
 
         public static void RemoveUser(User user)

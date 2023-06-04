@@ -1,0 +1,17 @@
+﻿body {
+}
+
+
+.error-text {
+    visibility: hidden;
+    font-size: .875em;
+    color: #dc3545;
+}
+
+.visible{
+    visibility: visible;
+}
+
+option{
+    color: black;
+}

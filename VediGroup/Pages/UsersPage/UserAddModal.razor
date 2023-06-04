@@ -1,0 +1,120 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+
+<div class="form-group">
+    <label for="exampleInputEmail1">Адрес электронной почты</label>
+    @if (isNew)
+    {
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" @bind-value="@User.login" placeholder="Введите адрес электронной почты">
+        
+    }
+    else
+    {
+        
+    <input type="email" readonly class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" @bind-value="@User.login" placeholder="Введите адрес электронной почты">
+    }
+    <small id="emailHelp" class="form-text text-muted">Никогда не передавайте логин сторонним лицам.</small>
+</div>
+<div class="form-group ">
+    <label for="exampleInputPassword1">Пароль</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" @bind-value="@User.password" placeholder="Пароль">
+</div>
+<div class="form-group">
+    <label for="exampleFormControlSelect1">Выберите роль</label>
+    <select class="form-control" @bind="@User.id_role" id="exampleFormControlSelect1">
+        @foreach(var role in Roles)
+        {
+            <option value="@role.id">@role.name</option>
+        }
+    </select>
+</div>
+
+
+<div class="@ErrorTextVisibility">
+    @ErrorMessageText
+</div>
+
+
+<div class="row">
+    <button class="btn btn-secondary col mx-4" @onclick=CancelClick>Отмена</button>
+    <button class="btn btn-success col mx-4" @onclick=SaveClick>Сохранить</button>
+</div>
+
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public Core.DataBase.User User { get; set; }
+    [Parameter]
+    public bool isNew { get; set; }
+
+    public List<Role> Roles = DataAccess.GetRoles();
+
+    private bool state = true;
+
+    private string ErrorTextVisibility => state ? "error-text mb-5" : "error-text mb-5 visible";
+
+    private void ChangeVisibility()
+    {
+        state = !state;
+    }
+
+    public string ErrorMessageText;
+
+    public void SaveClick()
+    {
+        ErrorMessageText = "";
+        state = true;
+        if(User.login == null || User.password == null)
+        {
+            ErrorMessageText = "Заполните все поля!";
+            state = false;
+        }
+        else
+        {
+            if (isNew)
+            {                
+                if(DataAccess.CheckLogin(User))
+                {
+                    if (DataAccess.CheckEmail(User))
+                    {
+                        DataAccess.SaveUser(User);
+                        NavigationManager.NavigateTo($"/users", true);
+                    }
+                    else
+                    {
+                        ErrorMessageText = "Недопустимый адрес электронной почты.";
+                        state = false;
+                    }
+                }
+                else
+                {
+                    ErrorMessageText = "Пользователь с таким почтовым адресом уже существует.";
+                    state = false;
+                }            
+            }
+            else
+            {
+                if (DataAccess.CheckEmail(User))
+                {
+                    DataAccess.SaveUser(User);
+                    NavigationManager.NavigateTo($"/users", true);
+                }
+                else
+                {
+                    ErrorMessageText = "Недопустимый адрес электронной почты.";
+                    state = false;
+                }
+            }
+        }
+
+    }
+
+
+    public void CancelClick()
+    {
+        ModalInstance.CloseAsync();
+    }
+}
