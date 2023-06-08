@@ -11,7 +11,9 @@ ps-3 navbar navbar-dark">
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Пароли
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                </svg> Пароли
             </NavLink>
         </div>
         <AuthorizeView Roles="User">
@@ -21,26 +23,9 @@ ps-3 navbar navbar-dark">
                         <span class="oi oi-plus" aria-hidden="true"></span> Заметки
                     </NavLink>
                 </div>
-
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="countries">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Страны
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="tours">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Туры
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="tourists">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Туристы
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="hotels">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Отели
+                    <NavLink class="nav-link" href="sharingcenter">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Центр обмена
                     </NavLink>
                 </div>
             </Authorized>
@@ -49,7 +34,16 @@ ps-3 navbar navbar-dark">
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="users">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Пользователи
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        </svg> Пользователи
+                    </NavLink>
+                </div>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="groups">
+                        <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="16" height="16" version="1.1" class="ui-components-h0oshn"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 20C5.5 20 5.53443 19.1016 5.93997 18C6.58243 16.2549 8.1563 14 12.0002 14C15.8442 14 17.4179 16.2549 18.0602 18C18.4656 19.1016 18.5 20 18.5 20H5.5ZM8.13105 18H15.8692C15.8652 17.9927 15.8611 17.9855 15.857 17.9782C15.3279 17.0345 14.3301 16 12.0002 16C9.67036 16 8.67245 17.0345 8.14313 17.9783C8.13908 17.9855 8.13506 17.9928 8.13105 18Z"></path><path d="M12 5C10.6193 5 9.5 6.11929 9.5 7.5C9.5 8.88071 10.6193 10 12 10C12.3224 10 12.6306 9.93896 12.9136 9.8278L14.3958 11.3099C13.702 11.7471 12.8806 12 12 12C9.51472 12 7.5 9.98528 7.5 7.5C7.5 5.01472 9.51472 3 12 3C14.4853 3 16.5 5.01472 16.5 7.5C16.5 8.38053 16.2471 9.202 15.81 9.89572L14.3278 8.41357C14.439 8.13058 14.5 7.82242 14.5 7.5C14.5 6.11929 13.3807 5 12 5Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M19.9996 4.5C19.9996 3.11929 18.8803 2 17.4996 2C16.9912 2 16.5183 2.15175 16.1236 2.41243C15.5693 1.97103 14.9412 1.61832 14.2609 1.37576C15.0793 0.527556 16.2278 0 17.4996 0C19.9849 0 21.9996 2.01472 21.9996 4.5C21.9996 6.66808 20.4664 8.47805 18.425 8.90475C18.5249 8.45181 18.5776 7.98162 18.5776 7.5C18.5776 7.25492 18.5641 7.01301 18.5376 6.77498C19.4002 6.38076 19.9996 5.51037 19.9996 4.5ZM19.8946 17H23.9996C23.9996 17 23.9652 16.1016 23.5596 15C22.9203 13.2634 21.3586 11.022 17.5554 11.0002C17.1244 11.6739 16.5573 12.2902 15.894 12.7617C16.1191 12.8635 16.3229 12.9671 16.5081 13.0705C16.8086 13.0249 17.138 13 17.4994 13C19.8292 13 20.8272 14.0345 21.3565 14.9783L21.3685 15H18.7462C19.2676 15.6692 19.6352 16.3659 19.8946 17Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M4 4.5C4 3.11929 5.11929 2 6.5 2C7.04496 2 7.54919 2.17437 7.95995 2.47035C8.50048 2.02731 9.11372 1.66969 9.77904 1.41811C8.95825 0.545151 7.79279 0 6.5 0C4.01472 0 2 2.01472 2 4.5C2 6.72509 3.61495 8.57299 5.73667 8.93552C5.63257 8.47371 5.57762 7.99327 5.57762 7.5C5.57762 7.27628 5.58892 7.05521 5.61098 6.83731C4.66919 6.47889 4 5.56759 4 4.5ZM6.59976 11.0005C6.56676 11.0002 6.53358 11 6.50024 11C2.6563 11 1.08243 13.2549 0.439965 15C0.034427 16.1016 0 17 0 17H4.26078C4.52023 16.3659 4.88792 15.6692 5.40938 15H2.63105L2.64313 14.9783C3.17245 14.0345 4.17036 13 6.50024 13C6.91013 13 7.27879 13.032 7.61093 13.0899C7.81841 12.9717 8.03439 12.8617 8.25902 12.7606C7.60235 12.2832 7.03854 11.6857 6.59976 11.0005Z"></path></svg>
+                        Группы
                     </NavLink>
                 </div>
             </Authorized>

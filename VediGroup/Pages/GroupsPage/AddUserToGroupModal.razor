@@ -1,0 +1,109 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+
+<div class="form-group ">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+    </svg>
+    <input type="search" class="form-control" @oninput="(e)=> SearchText = e.Value.ToString()" @bind-value="@SearchText" placeholder="Поиск"></input>
+</div>
+
+<div class="card m-3 table-briefs border-0">
+    <div class="card-body m-2">
+        <table class="usersTable">
+            <thead>
+                <tr>
+                    <th>ЛОГИН</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in FilteredUsers)
+                {
+
+                    <tr>
+@*                        @if (user != DataAccess.CurrentUser)
+                        {
+                            <td><input type="checkbox" @onclick="@(() => AddToRemoveList(user))"> </td>
+
+                        }
+                        else
+                        {
+                            <td></td>
+                        }*@
+                        <td class="loginCell">
+                            <div class="avatar">
+                                <img src="https://e7.pngegg.com/pngimages/178/595/png-clipart-user-profile-computer-icons-login-user-avatars-monochrome-black.png" width="30" height="30" alt="@user.login avatar">
+                            </div>
+                            <div class="loginText">
+                                <span class="loginTextEmail">
+                                    @user.login
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btnAdd" @onclick="@(() => AddUser(user))">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+
+    private string _searchText = "";
+
+    public string SearchText
+    {
+        get { return _searchText; }
+        set { 
+            _searchText = value;
+            Search();
+        }
+    }
+
+
+    [Parameter]
+    public List<User> AddedUsers { get; set; }
+    [Parameter]
+    public Group Group { get; set; }
+
+    public List<User> UnionUsers = DataAccess.GetUsers();
+    public List<User> FilteredUsers = new List<User>();
+
+    protected override void OnInitialized()
+    {
+        foreach(var user in AddedUsers)
+        {
+            UnionUsers.Remove(UnionUsers.Where(x => x.id == user.id).FirstOrDefault());
+        }
+        Search();
+        SearchText = "";
+    }
+
+    private void Search()
+    {
+        if (_searchText != "")
+        {
+            FilteredUsers = UnionUsers.Where(x => x.login.Contains(_searchText)).ToList();
+        }
+        else
+        {
+            FilteredUsers = UnionUsers;
+        }
+    }
+
+    private void AddUser(User user)
+    {
+        DataAccess.AddUserToGroup(Group, user);
+    }
+
+
+}

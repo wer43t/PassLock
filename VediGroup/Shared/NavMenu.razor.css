@@ -6,6 +6,10 @@
     height: 3.5rem;
 }
 
+a svg{
+    margin-right: 10px;
+}
+
 .navbar-brand {
     font-size: 1.1rem;
 }

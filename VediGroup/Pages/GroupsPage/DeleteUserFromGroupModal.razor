@@ -3,16 +3,16 @@
 
 
 
-@if(Users.Count > 1)
+@if (Users.Count > 1)
 {
     <p class="notify">
-        Вы действительно хотите удалить этих пользователей? Они потеряют доступ к паролям.
+        Вы действительно хотите удалить этих пользователей? Они потеряют доступ к паролям группы.
     </p>
 }
 else
 {
     <p class="notify">
-        Вы действительно хотите этого пользователя? @Users.FirstOrDefault().login потеряет доступ к паролям.
+        Вы действительно хотите этого пользователя? @Users.FirstOrDefault().login потеряет доступ к паролям группы.
     </p>
 }
 
@@ -29,15 +29,16 @@ else
 
     [Parameter]
     public List<Core.DataBase.User> Users { get; set; }
-    
+    [Parameter]
+    public Group Group { get; set; }
 
     public void DeleteClick()
     {
         foreach (var user in Users)
         {
-            DataAccess.RemoveUser(user);
+            DataAccess.RemoveUserFromGroup(Group, user);
         }
-        NavigationManager.NavigateTo($"/users", true);
+        NavigationManager.NavigateTo($"/groups/{Group.id}", true);
     }
 
     public void CancelClick()

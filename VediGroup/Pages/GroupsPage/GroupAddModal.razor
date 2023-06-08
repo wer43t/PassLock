@@ -1,0 +1,121 @@
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+@attribute [Authorize(Roles = "Administrator")]
+
+<div class="form-group">
+    <label for="exampleInputEmail1">Название группы</label>
+    <input  class="form-control"  @bind-value="@Group.name" placeholder="Введите название группы">
+    <small id="emailHelp" class="form-text text-muted">Никогда не передавайте логин сторонним лицам.</small>
+</div>
+<div class="form-group ">
+    <label for="exampleInputPassword1">Описание</label>
+    <textarea  class="form-control"  @bind="@Group.description" placeholder="Введите название группы"></textarea>
+</div>
+<div class="flex-column form-group">
+    <label for="exampleFormControlSelect1">Изображение</label>
+    <InputFile OnChange="@LoadFiles" multiple id="InputFiles">Добавить файлы</InputFile>
+</div>
+
+@if(Group.image != null && !isLoading)
+{
+    <img src="data:image/png;base64, @Convert.ToBase64String(Group.image)" class="card-img-top" alt="...">
+}
+
+@if (isLoading)
+{
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: @string.Format("{0:0%}", progressPercent)" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">@string.Format("{0:0%}", progressPercent)</div>
+    </div>
+
+}
+
+
+<div class="@ErrorTextVisibility">
+    @ErrorMessageText
+</div>
+
+
+<div class="row">
+    <button class="btn btn-secondary col mx-4" @onclick=CancelClick>Отмена</button>
+    <button class="btn btn-success col mx-4" @onclick=SaveClick>Сохранить</button>
+</div>
+
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter]
+    public Group Group { get; set; }
+
+    private bool isLoading;
+    private decimal progressPercent;
+
+    public List<Role> Roles = DataAccess.GetRoles();
+
+    private bool state = true;
+
+    private string ErrorTextVisibility => state ? "error-text mb-5" : "error-text mb-5 visible";
+
+    private void ChangeVisibility()
+    {
+        state = !state;
+    }
+
+    public string ErrorMessageText;
+
+    public void SaveClick()
+    {
+        DataAccess.SaveGroup(Group);
+        NavigationManager.NavigateTo($"/groups", true);
+    }
+
+    public async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        progressPercent = 0;
+
+
+
+        foreach (var file in e.GetMultipleFiles())
+        {
+
+            var stream = file.OpenReadStream(10268343 * 10);
+            Group.image = new byte[stream.Length];
+            var writeStream = new MemoryStream(Group.image);
+
+
+            var bytesRead = 0;
+            var totalRead = 0;
+            var buffer = new byte[4096];
+
+
+            while ((bytesRead = await stream.ReadAsync(buffer)) != 0)
+            {
+                totalRead += bytesRead;
+
+                await writeStream.WriteAsync(buffer, 0, bytesRead);
+                progressPercent = Decimal.Divide(totalRead, file.Size);
+
+                StateHasChanged();
+            }
+
+            //Document dbFile = new Document();
+            await writeStream.ReadAsync(Group.image);
+
+            //await stream.ReadAsync(dbFile.binary_data);
+        }
+
+        isLoading = false;
+
+
+
+
+    }
+
+
+    public void CancelClick()
+    {
+        ModalInstance.CloseAsync();
+    }
+}

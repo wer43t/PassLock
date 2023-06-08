@@ -19,6 +19,31 @@ namespace Core
         public static List<Login> GetUserLogins(int id) => GetLogins().Where(x => x.user_id == id).ToList();
         public static List<Note> GetNotes() => PassLockEntities.GetContext().Notes.Where(x => x.user_id == CurrentUser.id).ToList();
         public static List<Document> GetDocuments() => PassLockEntities.GetContext().Documents.ToList();
+        public static List<DataBase.Group> GetGroups() => PassLockEntities.GetContext().Groups.ToList();
+        public static DataBase.Group GetGroup(int id) => GetGroups().Where(x => x.id == id).FirstOrDefault();
+        public static List<GroupUser> GetGroupUsers() => PassLockEntities.GetContext().GroupUsers.ToList();
+
+
+        public static void SaveGroup(DataBase.Group group)
+        {
+            if (group.id == 0)
+                PassLockEntities.GetContext().Groups.Add(group);
+
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void RemoveUserFromGroup(DataBase.Group group, User user) 
+        {
+            PassLockEntities.GetContext().GroupUsers.Remove(GetGroupUsers().Where(x => x.group_id == group.id && x.user_id == user.id).FirstOrDefault());
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void AddUserToGroup(DataBase.Group group, User user)
+        {
+            PassLockEntities.GetContext().GroupUsers.Add(new GroupUser { group_id = group.id, user_id = user.id });
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
 
         public static Role GetRole(string name) => GetRoles().FirstOrDefault(x => x.name == name);
 

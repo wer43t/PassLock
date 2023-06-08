@@ -9,12 +9,12 @@
     border-radius: 50%;
 }
 
-.avatar img {
+    .avatar img {
         border-radius: 50%;
         position: relative;
         top: -1px;
         left: -1px;
-}
+    }
 
 .loginText {
     margin-left: 16px;
@@ -41,13 +41,14 @@
     top: 0px;
     left: 0px;
     right: 0px;
+    z-index: 50;
     display: flex;
     flex-direction: row;
     -webkit-box-align: center;
     align-items: center;
     padding: 10px 16px;
     margin: 8px;
-/*    border-radius: 8px;
+    /*    border-radius: 8px;
     background-color: inherit;
     background-image: linear-gradient(rgba(162, 163, 163, 50) 100%, white);*/
     transform: scale3d(1, 1, 1);
@@ -98,7 +99,7 @@
         background-color: transparent;
     }
 
-.divFlex{
+.divFlex {
     display: flex;
     align-items: center;
 }
@@ -165,6 +166,6 @@
     gap: 6px;
 }
 
-.center svg{
-    height: 20px;
-}
+    .center svg {
+        height: 20px;
+    }

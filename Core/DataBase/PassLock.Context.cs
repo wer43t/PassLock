@@ -26,6 +26,8 @@ namespace Core.DataBase
         }
     
         public virtual DbSet<Document> Documents { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<GroupUser> GroupUsers { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
         public virtual DbSet<NoteFile> NoteFiles { get; set; }
         public virtual DbSet<Note> Notes { get; set; }

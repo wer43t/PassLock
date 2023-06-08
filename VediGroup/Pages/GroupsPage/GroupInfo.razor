@@ -1,13 +1,14 @@
-﻿@page "/users"
+﻿@page "/groups/{stringId}"
 @attribute [Authorize(Roles = "Administrator")]
 @inject NavigationManager NavigationManager
 @inject IModalService ModalService
 @inject IJSRuntime JS
 
+<h3>@Group.name</h3>
 
 <div class="divFlex">
     <div>
-        <button class="btn btn-primary" @onclick=@(NewUser)>
+        <button class="btn btn-primary" @onclick=@(AddUserModal)>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
@@ -27,6 +28,7 @@
     </div>
 </div>
 
+
 <div class="card m-3 table-briefs border-0">
     <div class="card-body m-2">
         <table class="usersTable">
@@ -34,8 +36,6 @@
                 <tr>
                     <th></th>
                     <th>ЛОГИН</th>
-                    <th>ПАРОЛЕЙ</th>
-                    <th>РОЛЬ</th>
                     <th></th>
                 </tr>
             </thead>
@@ -44,7 +44,7 @@
                 {
 
                     <tr>
-                        @if(user != DataAccess.CurrentUser)
+                        @if (user != DataAccess.CurrentUser)
                         {
                             <td><input type="checkbox" @onclick="@(() => AddToRemoveList(user))"> </td>
 
@@ -64,37 +64,14 @@
                             </div>
                         </td>
                         <td>
-                            @user.Logins.Count()
-                        </td>
-                        <td>
-                            @user.Role.name
-                        </td>
-                        <td>
                             @if (user != DataAccess.CurrentUser)
-                            {                                
+                            {
                                 <div class="dropdown">
                                     <span class="center">
-                                        <button @onclick="@(() => ShowDropDown(user.id))" class="dropbtn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false" role="img" class="ui-components-1g8715w"><path d="M14 12a2 2 0 0 1-.1.627l1.493 1.493a4 4 0 1 0-1.45 1.378l-1.54-1.539A2 2 0 1 1 14 12Z"></path><path fill-rule="evenodd" clip-rule="evenodd" d="m10.103 2-.807 3.058c-.09.037-.18.075-.27.116l-2.77-1.572-2.654 2.654L5.153 8.99a7.854 7.854 0 0 0-.135.32L2 10.13v3.788l3.051.806c.038.094.078.187.119.277l-1.568 2.765 2.654 2.654 2.734-1.55c.106.047.213.093.321.136L10.133 22h3.784l.805-3.022a7.39 7.39 0 0 0 .291-.119l2.754 1.562 2.654-2.654-1.558-2.747c.043-.1.083-.202.122-.304L22 13.89v-3.785l-3.039-.808a6.038 6.038 0 0 0-.118-.258l1.578-2.782-2.654-2.654L15.02 5.16c-.1-.043-.2-.083-.302-.121L13.89 2h-3.788ZM8.455 7.148c.05.029.102.053.155.072a1 1 0 0 0 .87-.04 5.85 5.85 0 0 1 .961-.414l.517-.169L11.644 4h.718l.713 2.617.535.158c.348.103.686.238 1.01.404a1 1 0 0 0 1.067-.098l1.742-.988.501.5-1.055 1.862.009.005a.998.998 0 0 0-.112.853l.066.203.043.08c.177.328.273.532.376.846l.168.515 2.575.685v.722l-2.595.712-.157.533a5.845 5.845 0 0 1-.404 1.01 1 1 0 0 0 .098 1.068l.988 1.743-.5.5-1.697-.962a1 1 0 0 0-1.12-.132c-.324.17-.662.308-1.01.414l-.533.162L12.38 20h-.721l-.529-1.928a1 1 0 0 0-.87-.847 5.852 5.852 0 0 1-.837-.37 1 1 0 0 0-1.088.088l-1.741.987-.501-.5.963-1.699a.996.996 0 0 0 .245-.655v-.284l-.114-.218a5.497 5.497 0 0 1-.414-.972l-.162-.534L4 12.379v-.718l2.078-.565-.014-.053a1 1 0 0 0 .737-.79 5.85 5.85 0 0 1 .368-.83 1 1 0 0 0-.091-1.092l-.985-1.736.5-.5 1.862 1.054Z"></path>
-                                            </svg>
+                                        <button @onclick="@(() => DeleteOneModal(user))" class="dropbtn">
+                                            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" version="1.1" class="ui-components-1mdtk1p"><path d="M6 3.5V2H14V3.5H6Z"></path><path d="M17 6.5V5H3V6.5H4V18H13L12 16.5H5.5V6.5H14.5V18H16V6.5H17Z"></path><path d="M12.5 9H11V14L12.5 13V9Z"></path><path d="M9 9H7.5V14L9 13V9Z"></path></svg>
                                         </button>
                                     </span>
-                                    <div id="myDropdown @user.id" class="dropdown-content">
-                                        <button @onclick="@(() => DeleteOneModal(user))">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-slash" viewBox="0 0 16 16">
-                                                <path d="M13.879 10.414a2.501 2.501 0 0 0-3.465 3.465l3.465-3.465Zm.707.707-3.465 3.465a2.501 2.501 0 0 0 3.465-3.465Zm-4.56-1.096a3.5 3.5 0 1 1 4.949 4.95 3.5 3.5 0 0 1-4.95-4.95ZM11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Z"></path>
-                                            </svg>
-                                            Удалить
-                                        </button>
-                                        <button @onclick="@(() => EditUserModal(user))">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
-                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
-                                            </svg>
-                                            Редактировать</button>
-    @*                                    <button @onclick="@(() => CopyUsername(login.password))">Скопировать пароль</button>
-                                        <button @onclick="@(() => OpenInNewTab(login.website))">Открыть сайт</button>*@
-                                    </div>
                                 </div>
                             }
                         </td>
@@ -106,7 +83,26 @@
 </div>
 
 @code {
-    public List<Core.DataBase.User> Users = DataAccess.GetUsers();
+    [Parameter]
+    public string? stringId { get; set; }
+    public int Id;
+    public Group Group { get; set; }
+    public List<User> Users = new List<User>();
+
+    protected override void OnInitialized()
+    {
+        int.TryParse(stringId, out Id);
+        if (Id != 0)
+        {
+            Group = DataAccess.GetGroup(Id);
+        }
+
+        foreach(var user in Group.GroupUsers)
+        {
+            Users.Add(user.User);
+        }
+    }
+
 
     public List<Core.DataBase.User> UsersForDelete = new List<Core.DataBase.User>();
 
@@ -158,10 +154,11 @@
                 Size = ModalSize.Medium
             };
         var parameters = new ModalParameters()
-        .Add(nameof(UsersPage.UsersDeleteModal.Users), UsersForDelete);
+        .Add(nameof(DeleteUserFromGroupModal.Users), UsersForDelete);
+        parameters.Add(nameof(DeleteUserFromGroupModal.Group), Group);
         if (UsersForDelete.Count == 1)
         {
-            ModalService.Show<UsersPage.UsersDeleteModal>($"Удалить пользователя?", parameters, options);
+            ModalService.Show<DeleteUserFromGroupModal>($"Удалить пользователя?", parameters, options);
         }
     }
 
@@ -172,27 +169,28 @@
                 Size = ModalSize.Medium
             };
         var parameters = new ModalParameters()
-        .Add(nameof(UsersPage.UsersDeleteModal.Users), UsersForDelete);
+        .Add(nameof(DeleteUserFromGroupModal.Users), UsersForDelete);
+        parameters.Add(nameof(DeleteUserFromGroupModal.Group), Group);
         if (UsersForDelete.Count == 1)
         {
-            ModalService.Show<UsersPage.UsersDeleteModal>($"Удалить пользователя?", parameters, options);
+            ModalService.Show<DeleteUserFromGroupModal>($"Удалить пользователя?", parameters, options);
         }
         else
         {
-            ModalService.Show<UsersPage.UsersDeleteModal>($"Удалить {UsersForDelete.Count()} пользователей?", parameters, options);
+            ModalService.Show<DeleteUserFromGroupModal>($"Удалить {UsersForDelete.Count()} пользователей?", parameters, options);
         }
     }
 
-    private void NewUser()
+    private void AddUserModal()
     {
         var options = new ModalOptions()
             {
                 Size = ModalSize.Medium
             };
         var parameters = new ModalParameters()
-        .Add(nameof(UsersPage.UserAddModal.User), new Core.DataBase.User { id_role = 2 });
-        parameters.Add(nameof(UsersPage.UserAddModal.isNew), true);
-        ModalService.Show<UsersPage.UserAddModal>($"Добавление пользователя", parameters, options);
+        .Add(nameof(AddUserToGroupModal.AddedUsers), Users);
+        parameters.Add(nameof(AddUserToGroupModal.Group), Group);
+        ModalService.Show<AddUserToGroupModal>($"Добавление пользователя", parameters, options);
     }
 
     private void EditUserModal(Core.DataBase.User user)
@@ -206,6 +204,5 @@
         parameters.Add(nameof(UsersPage.UserAddModal.isNew), false);
         ModalService.Show<UsersPage.UserAddModal>($"Редактирование пользователя", parameters, options);
     }
-
 
 }
