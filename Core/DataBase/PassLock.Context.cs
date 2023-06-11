@@ -27,12 +27,15 @@ namespace Core.DataBase
     
         public virtual DbSet<Document> Documents { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<GroupPasswordShared> GroupPasswordShareds { get; set; }
         public virtual DbSet<GroupUser> GroupUsers { get; set; }
         public virtual DbSet<Login> Logins { get; set; }
         public virtual DbSet<NoteFile> NoteFiles { get; set; }
         public virtual DbSet<Note> Notes { get; set; }
+        public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserPasswordShared> UserPasswordShareds { get; set; }
     }
 }

@@ -69,6 +69,9 @@
         }
     }
 
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+
 
     [Parameter]
     public List<User> AddedUsers { get; set; }
@@ -104,6 +107,7 @@
     {
         DataAccess.AddUserToGroup(Group, user);
     }
+
 
 
 }

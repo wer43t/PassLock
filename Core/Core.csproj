@@ -60,6 +60,9 @@
     <Compile Include="DataBase\Group.cs">
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\GroupPasswordShared.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\GroupUser.cs">
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
@@ -88,6 +91,9 @@
       <DependentUpon>PassLock.edmx</DependentUpon>
     </Compile>
     <Compile Include="DataBase\PassLockEntities.cs" />
+    <Compile Include="DataBase\Permission.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\Role.cs">
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
@@ -95,6 +101,9 @@
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\User.cs">
+      <DependentUpon>PassLock.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\UserPasswordShared.cs">
       <DependentUpon>PassLock.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

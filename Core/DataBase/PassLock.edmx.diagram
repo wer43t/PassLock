@@ -4,23 +4,32 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="eb356af277564c8a81ca10eae6805f6a" Name="Diagram1">
-        <EntityTypeShape EntityType="PassLockModel.Document" Width="1.5" PointX="5.25" PointY="12.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.Group" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.GroupUser" Width="1.5" PointX="5.25" PointY="2.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.Login" Width="1.5" PointX="5.25" PointY="5.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.NoteFile" Width="1.5" PointX="7.5" PointY="9.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.Note" Width="1.5" PointX="5.25" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.Role" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.sysdiagram" Width="1.5" PointX="7.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="PassLockModel.User" Width="1.5" PointX="3" PointY="4.5" IsExpanded="true" />
+      <Diagram DiagramId="2973608358d94b0fb86443096f90e394" Name="Diagram1">
+        <EntityTypeShape EntityType="PassLockModel.Document" Width="1.5" PointX="5.25" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.Group" Width="1.5" PointX="3" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.GroupPasswordShared" Width="1.5" PointX="7.5" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.GroupUser" Width="1.5" PointX="5.25" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.Login" Width="1.5" PointX="5.25" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.NoteFile" Width="1.5" PointX="7.5" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.Note" Width="1.5" PointX="5.25" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.Permission" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.Role" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.sysdiagram" Width="1.5" PointX="7.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.User" Width="1.5" PointX="3" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PassLockModel.UserPasswordShared" Width="1.5" PointX="7.5" PointY="4.5" IsExpanded="true" />
         <AssociationConnector Association="PassLockModel.FK_NoteFiles_Files" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_GroupPasswordShared_Group" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_GroupUsers_Group" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_GroupPasswordShared_Logins" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_GroupPasswordShared_Permissions" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_GroupUsers_User" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_Logins_User" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_UserPasswordShared_Logins" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_NoteFiles_Notes" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_Notes_User" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_UserPasswordShared_Permissions" ManuallyRouted="false" />
         <AssociationConnector Association="PassLockModel.FK_User_Role" ManuallyRouted="false" />
+        <AssociationConnector Association="PassLockModel.FK_UserPasswordShared_User" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

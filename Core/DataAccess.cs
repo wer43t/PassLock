@@ -22,7 +22,21 @@ namespace Core
         public static List<DataBase.Group> GetGroups() => PassLockEntities.GetContext().Groups.ToList();
         public static DataBase.Group GetGroup(int id) => GetGroups().Where(x => x.id == id).FirstOrDefault();
         public static List<GroupUser> GetGroupUsers() => PassLockEntities.GetContext().GroupUsers.ToList();
+        public static List<GroupPasswordShared> GetGroupPasswordShareds() => PassLockEntities.GetContext().GroupPasswordShareds.ToList();
 
+        public static void SaveGroupPasswordShared(GroupPasswordShared groupPasswordShared)
+        {
+            if(groupPasswordShared.id == 0)
+            {
+                PassLockEntities.GetContext().GroupPasswordShareds.Add(groupPasswordShared);
+            }
+        }
+
+        public static void RemovePasswordShared(GroupPasswordShared groupPasswordShared)
+        {
+            PassLockEntities.GetContext().GroupPasswordShareds.Remove(groupPasswordShared);
+            PassLockEntities.GetContext().SaveChanges();
+        }
 
         public static void SaveGroup(DataBase.Group group)
         {

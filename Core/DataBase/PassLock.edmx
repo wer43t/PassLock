@@ -22,6 +22,15 @@
           <Property Name="image" Type="varbinary(max)" />
           <Property Name="description" Type="nvarchar" MaxLength="1500" />
         </EntityType>
+        <EntityType Name="GroupPasswordShared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_group" Type="int" />
+          <Property Name="id_password" Type="int" />
+          <Property Name="id_permissions" Type="int" />
+        </EntityType>
         <EntityType Name="GroupUsers">
           <Key>
             <PropertyRef Name="id" />
@@ -60,6 +69,14 @@
           <Property Name="user_id" Type="int" />
           <Property Name="item_name" Type="nvarchar" MaxLength="300" />
         </EntityType>
+        <EntityType Name="Permissions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="50" />
+          <Property Name="description" Type="nvarchar" MaxLength="150" />
+        </EntityType>
         <EntityType Name="Role">
           <Key>
             <PropertyRef Name="id" />
@@ -86,6 +103,51 @@
           <Property Name="password" Type="nvarchar" MaxLength="50" />
           <Property Name="id_role" Type="int" />
         </EntityType>
+        <EntityType Name="UserPasswordShared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_shared_user" Type="int" />
+          <Property Name="id_password" Type="int" />
+          <Property Name="id_permissions" Type="int" />
+        </EntityType>
+        <Association Name="FK_GroupPasswordShared_Group">
+          <End Role="Group" Type="Self.Group" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_group" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupPasswordShared_Logins">
+          <End Role="Logins" Type="Self.Logins" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Logins">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_password" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupPasswordShared_Permissions">
+          <End Role="Permissions" Type="Self.Permissions" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permissions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_permissions" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GroupUsers_Group">
           <End Role="Group" Type="Self.Group" Multiplicity="0..1" />
           <End Role="GroupUsers" Type="Self.GroupUsers" Multiplicity="*" />
@@ -170,16 +232,67 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserPasswordShared_Logins">
+          <End Role="Logins" Type="Self.Logins" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Logins">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_password" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPasswordShared_Permissions">
+          <End Role="Permissions" Type="Self.Permissions" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permissions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_permissions" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPasswordShared_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_shared_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="Хранилище PassLockModelContainer">
           <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Group" EntityType="Self.Group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GroupPasswordShared" EntityType="Self.GroupPasswordShared" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GroupUsers" EntityType="Self.GroupUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Logins" EntityType="Self.Logins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NoteFiles" EntityType="Self.NoteFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Notes" EntityType="Self.Notes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPasswordShared" EntityType="Self.UserPasswordShared" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_GroupPasswordShared_Group" Association="Self.FK_GroupPasswordShared_Group">
+            <End Role="Group" EntitySet="Group" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShared" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupPasswordShared_Logins" Association="Self.FK_GroupPasswordShared_Logins">
+            <End Role="Logins" EntitySet="Logins" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShared" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupPasswordShared_Permissions" Association="Self.FK_GroupPasswordShared_Permissions">
+            <End Role="Permissions" EntitySet="Permissions" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShared" />
+          </AssociationSet>
           <AssociationSet Name="FK_GroupUsers_Group" Association="Self.FK_GroupUsers_Group">
             <End Role="Group" EntitySet="Group" />
             <End Role="GroupUsers" EntitySet="GroupUsers" />
@@ -208,6 +321,18 @@
             <End Role="Role" EntitySet="Role" />
             <End Role="User" EntitySet="User" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_Logins" Association="Self.FK_UserPasswordShared_Logins">
+            <End Role="Logins" EntitySet="Logins" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShared" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_Permissions" Association="Self.FK_UserPasswordShared_Permissions">
+            <End Role="Permissions" EntitySet="Permissions" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShared" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_User" Association="Self.FK_UserPasswordShared_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShared" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
@@ -231,7 +356,20 @@
           <Property Name="name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="description" Type="String" MaxLength="1500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GroupPasswordShareds" Relationship="Self.FK_GroupPasswordShared_Group" FromRole="Group" ToRole="GroupPasswordShared" />
           <NavigationProperty Name="GroupUsers" Relationship="Self.FK_GroupUsers_Group" FromRole="Group" ToRole="GroupUsers" />
+        </EntityType>
+        <EntityType Name="GroupPasswordShared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_group" Type="Int32" />
+          <Property Name="id_password" Type="Int32" />
+          <Property Name="id_permissions" Type="Int32" />
+          <NavigationProperty Name="Group" Relationship="Self.FK_GroupPasswordShared_Group" FromRole="GroupPasswordShared" ToRole="Group" />
+          <NavigationProperty Name="Login" Relationship="Self.FK_GroupPasswordShared_Logins" FromRole="GroupPasswordShared" ToRole="Logins" />
+          <NavigationProperty Name="Permission" Relationship="Self.FK_GroupPasswordShared_Permissions" FromRole="GroupPasswordShared" ToRole="Permissions" />
         </EntityType>
         <EntityType Name="GroupUser">
           <Key>
@@ -255,7 +393,9 @@
           <Property Name="note" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="user_id" Type="Int32" />
           <Property Name="email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GroupPasswordShareds" Relationship="Self.FK_GroupPasswordShared_Logins" FromRole="Logins" ToRole="GroupPasswordShared" />
           <NavigationProperty Name="User" Relationship="Self.FK_Logins_User" FromRole="Logins" ToRole="User" />
+          <NavigationProperty Name="UserPasswordShareds" Relationship="Self.FK_UserPasswordShared_Logins" FromRole="Logins" ToRole="UserPasswordShared" />
         </EntityType>
         <EntityType Name="NoteFile">
           <Key>
@@ -277,6 +417,16 @@
           <Property Name="item_name" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="NoteFiles" Relationship="Self.FK_NoteFiles_Notes" FromRole="Notes" ToRole="NoteFiles" />
           <NavigationProperty Name="User" Relationship="Self.FK_Notes_User" FromRole="Notes" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="GroupPasswordShareds" Relationship="Self.FK_GroupPasswordShared_Permissions" FromRole="Permissions" ToRole="GroupPasswordShared" />
+          <NavigationProperty Name="UserPasswordShareds" Relationship="Self.FK_UserPasswordShared_Permissions" FromRole="Permissions" ToRole="UserPasswordShared" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -308,6 +458,19 @@
           <NavigationProperty Name="Logins" Relationship="Self.FK_Logins_User" FromRole="User" ToRole="Logins" />
           <NavigationProperty Name="Notes" Relationship="Self.FK_Notes_User" FromRole="User" ToRole="Notes" />
           <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
+          <NavigationProperty Name="UserPasswordShareds" Relationship="Self.FK_UserPasswordShared_User" FromRole="User" ToRole="UserPasswordShared" />
+        </EntityType>
+        <EntityType Name="UserPasswordShared">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_shared_user" Type="Int32" />
+          <Property Name="id_password" Type="Int32" />
+          <Property Name="id_permissions" Type="Int32" />
+          <NavigationProperty Name="Login" Relationship="Self.FK_UserPasswordShared_Logins" FromRole="UserPasswordShared" ToRole="Logins" />
+          <NavigationProperty Name="Permission" Relationship="Self.FK_UserPasswordShared_Permissions" FromRole="UserPasswordShared" ToRole="Permissions" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserPasswordShared_User" FromRole="UserPasswordShared" ToRole="User" />
         </EntityType>
         <Association Name="FK_NoteFiles_Files">
           <End Role="Documents" Type="Self.Document" Multiplicity="0..1" />
@@ -321,6 +484,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_GroupPasswordShared_Group">
+          <End Role="Group" Type="Self.Group" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_group" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_GroupUsers_Group">
           <End Role="Group" Type="Self.Group" Multiplicity="0..1" />
           <End Role="GroupUsers" Type="Self.GroupUser" Multiplicity="*" />
@@ -330,6 +505,30 @@
             </Principal>
             <Dependent Role="GroupUsers">
               <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupPasswordShared_Logins">
+          <End Role="Logins" Type="Self.Login" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Logins">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_password" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GroupPasswordShared_Permissions">
+          <End Role="Permissions" Type="Self.Permission" Multiplicity="0..1" />
+          <End Role="GroupPasswordShared" Type="Self.GroupPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permissions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GroupPasswordShared">
+              <PropertyRef Name="id_permissions" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -357,6 +556,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserPasswordShared_Logins">
+          <End Role="Logins" Type="Self.Login" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Logins">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_password" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_NoteFiles_Notes">
           <End Role="Notes" Type="Self.Note" Multiplicity="0..1" />
           <End Role="NoteFiles" Type="Self.NoteFile" Multiplicity="*" />
@@ -381,6 +592,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserPasswordShared_Permissions">
+          <End Role="Permissions" Type="Self.Permission" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permissions">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_permissions" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Role">
           <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
@@ -393,23 +616,50 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserPasswordShared_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserPasswordShared" Type="Self.UserPasswordShared" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserPasswordShared">
+              <PropertyRef Name="id_shared_user" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="PassLockEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Documents" EntityType="Self.Document" />
           <EntitySet Name="Groups" EntityType="Self.Group" />
+          <EntitySet Name="GroupPasswordShareds" EntityType="Self.GroupPasswordShared" />
           <EntitySet Name="GroupUsers" EntityType="Self.GroupUser" />
           <EntitySet Name="Logins" EntityType="Self.Login" />
           <EntitySet Name="NoteFiles" EntityType="Self.NoteFile" />
           <EntitySet Name="Notes" EntityType="Self.Note" />
+          <EntitySet Name="Permissions" EntityType="Self.Permission" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserPasswordShareds" EntityType="Self.UserPasswordShared" />
           <AssociationSet Name="FK_NoteFiles_Files" Association="Self.FK_NoteFiles_Files">
             <End Role="Documents" EntitySet="Documents" />
             <End Role="NoteFiles" EntitySet="NoteFiles" />
           </AssociationSet>
+          <AssociationSet Name="FK_GroupPasswordShared_Group" Association="Self.FK_GroupPasswordShared_Group">
+            <End Role="Group" EntitySet="Groups" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShareds" />
+          </AssociationSet>
           <AssociationSet Name="FK_GroupUsers_Group" Association="Self.FK_GroupUsers_Group">
             <End Role="Group" EntitySet="Groups" />
             <End Role="GroupUsers" EntitySet="GroupUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupPasswordShared_Logins" Association="Self.FK_GroupPasswordShared_Logins">
+            <End Role="Logins" EntitySet="Logins" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShareds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GroupPasswordShared_Permissions" Association="Self.FK_GroupPasswordShared_Permissions">
+            <End Role="Permissions" EntitySet="Permissions" />
+            <End Role="GroupPasswordShared" EntitySet="GroupPasswordShareds" />
           </AssociationSet>
           <AssociationSet Name="FK_GroupUsers_User" Association="Self.FK_GroupUsers_User">
             <End Role="User" EntitySet="Users" />
@@ -419,6 +669,10 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Logins" EntitySet="Logins" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_Logins" Association="Self.FK_UserPasswordShared_Logins">
+            <End Role="Logins" EntitySet="Logins" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShareds" />
+          </AssociationSet>
           <AssociationSet Name="FK_NoteFiles_Notes" Association="Self.FK_NoteFiles_Notes">
             <End Role="Notes" EntitySet="Notes" />
             <End Role="NoteFiles" EntitySet="NoteFiles" />
@@ -427,9 +681,17 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Notes" EntitySet="Notes" />
           </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_Permissions" Association="Self.FK_UserPasswordShared_Permissions">
+            <End Role="Permissions" EntitySet="Permissions" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShareds" />
+          </AssociationSet>
           <AssociationSet Name="FK_User_Role" Association="Self.FK_User_Role">
             <End Role="Role" EntitySet="Roles" />
             <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPasswordShared_User" Association="Self.FK_UserPasswordShared_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserPasswordShared" EntitySet="UserPasswordShareds" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -454,6 +716,16 @@
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="image" ColumnName="image" />
                 <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GroupPasswordShareds">
+            <EntityTypeMapping TypeName="PassLockModel.GroupPasswordShared">
+              <MappingFragment StoreEntitySet="GroupPasswordShared">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_group" ColumnName="id_group" />
+                <ScalarProperty Name="id_password" ColumnName="id_password" />
+                <ScalarProperty Name="id_permissions" ColumnName="id_permissions" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -499,6 +771,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="PassLockModel.Permission">
+              <MappingFragment StoreEntitySet="Permissions">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="description" ColumnName="description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Roles">
             <EntityTypeMapping TypeName="PassLockModel.Role">
               <MappingFragment StoreEntitySet="Role">
@@ -525,6 +806,16 @@
                 <ScalarProperty Name="login" ColumnName="login" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="id_role" ColumnName="id_role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPasswordShareds">
+            <EntityTypeMapping TypeName="PassLockModel.UserPasswordShared">
+              <MappingFragment StoreEntitySet="UserPasswordShared">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="id_shared_user" ColumnName="id_shared_user" />
+                <ScalarProperty Name="id_password" ColumnName="id_password" />
+                <ScalarProperty Name="id_permissions" ColumnName="id_permissions" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
