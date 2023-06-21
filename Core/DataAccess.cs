@@ -30,11 +30,18 @@ namespace Core
             {
                 PassLockEntities.GetContext().GroupPasswordShareds.Add(groupPasswordShared);
             }
+            PassLockEntities.GetContext().SaveChanges();
         }
 
-        public static void RemovePasswordShared(GroupPasswordShared groupPasswordShared)
+        public static void RemoveGroupPasswordShared(GroupPasswordShared groupPasswordShared)
         {
             PassLockEntities.GetContext().GroupPasswordShareds.Remove(groupPasswordShared);
+            PassLockEntities.GetContext().SaveChanges();
+        }
+
+        public static void RemoveGroup(DataBase.Group group)
+        {
+            PassLockEntities.GetContext().Groups.Remove(group);
             PassLockEntities.GetContext().SaveChanges();
         }
 
@@ -106,6 +113,10 @@ namespace Core
             if(login.id == 0)
             {
                 login.user_id = CurrentUser.id;
+                if (!login.website.Contains("https://"))
+                {
+                    login.website = "https://" + login.website;
+                }
                 PassLockEntities.GetContext().Logins.Add(login);
             } 
 
@@ -124,7 +135,7 @@ namespace Core
             if (note.id == 0)
             {
                 note.user_id = CurrentUser.id;
-                if(note.item_name != null)
+                if(note.item_name == null)
                 {
                     note.item_name = "Новая заметка без названия";
                 }

@@ -41,7 +41,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>ITEM NAME</th>
+                    <th>НАЗВАНИЕ</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -161,6 +161,14 @@
         var parameters = new ModalParameters()
         .Add(nameof(Password.DeletePasswordsModal.Logins), LoginsForDelete);
         ModalService.Show<Password.DeletePasswordsModal>($"Удалить навсегда {LoginsForDelete.Count()} паролей?", parameters, options);
+    }
+
+    protected override void OnInitialized()
+    {
+        if(DataAccess.CurrentUser.id_role == 1)
+        {
+            NavigationManager.NavigateTo("/users", true);
+        }
     }
 
 

@@ -1,5 +1,43 @@
-﻿<h3>GroupDeleteModal</h3>
+﻿@inject NavigationManager NavigationManager
+@inject IModalService ModalService
+
+
+
+<p class="notify">
+    Вы действительно хотите удалить эту группу? Пользователи группы @Group.name потеряют доступ к паролям группы.
+</p>
+
+
+<div class="row">
+    <button class="btn btn-secondary col mx-4" @onclick=CancelClick>Отмена</button>
+    <button class="btn btn-danger col mx-4" @onclick=DeleteClick>Удалить</button>
+</div>
+
+
 
 @code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
+    [Parameter]
+    public Group Group { get; set; }
+
+    public void DeleteClick()
+    {
+        foreach(var user in Group.GroupUsers.Select(x => x.User).ToList())
+        {
+
+            DataAccess.RemoveUserFromGroup(Group,user);
+        }
+        foreach(var groupShared in Group.GroupPasswordShareds)
+        {
+            DataAccess.RemoveGroupPasswordShared(groupShared);
+        }
+        DataAccess.RemoveGroup(Group);
+        NavigationManager.NavigateTo($"/groups",true);
+    }
+
+    public void CancelClick()
+    { 
+        ModalInstance.CloseAsync();
+    }
 }

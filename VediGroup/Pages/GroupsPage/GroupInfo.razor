@@ -26,6 +26,16 @@
             </button>
         </div>
     </div>
+    <div>
+        <div>
+            <button type="button" @onclick="@(ShowDeleteModalGroup)" class="btn btn-secondary">
+                <span class="flex-row">
+                    <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" version="1.1" class="ui-components-1mdtk1p"><path d="M6 3.5V2H14V3.5H6Z"></path><path d="M17 6.5V5H3V6.5H4V18H13L12 16.5H5.5V6.5H14.5V18H16V6.5H17Z"></path><path d="M12.5 9H11V14L12.5 13V9Z"></path><path d="M9 9H7.5V14L9 13V9Z"></path></svg>
+                    Удалить группу
+                </span>
+            </button>
+        </div>
+    </div>
 </div>
 
 
@@ -179,6 +189,17 @@
         {
             ModalService.Show<DeleteUserFromGroupModal>($"Удалить {UsersForDelete.Count()} пользователей?", parameters, options);
         }
+    }
+
+    public void ShowDeleteModalGroup()
+    {
+        var options = new ModalOptions()
+            {
+                Size = ModalSize.Medium
+            };
+        var parameters = new ModalParameters()
+        .Add(nameof(GroupDeleteModal.Group), Group);
+        ModalService.Show<GroupDeleteModal>($"Удаление группы", parameters, options);
     }
 
     private void AddUserModal()

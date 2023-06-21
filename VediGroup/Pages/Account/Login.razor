@@ -23,13 +23,16 @@
             </p>
         </EditForm>*@
         <EditForm class="form login" Model="@ViewModel" OnSubmit="LoginAsync">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
             <div class="form__field">
                 <label for="login__username">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
                     </svg>
                 </label>
-                <input id="login__username" @bind-value="@ViewModel.Username" type="text" name="username" class="form__input" placeholder="Username" required="" data-dashlane-rid="49669d1e8bbb5a3a" data-form-type="username" data-kwimpalastatus="alive" data-kwimpalaid="1685920134538-0">
+                <input id="login__username" @bind-value="@ViewModel.Username" type="text" name="username" class="form__input" placeholder="Email" required="" data-dashlane-rid="49669d1e8bbb5a3a" data-form-type="username" data-kwimpalastatus="alive" data-kwimpalaid="1685920134538-0">
             </div>
             <div class="form__field">
                 <label for="login__password">
@@ -37,8 +40,14 @@
                         <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
                     </svg>
                 </label>
-                <input id="login__password" type="password" @bind-value="@ViewModel.Password" name="password" class="form__input" placeholder="Password" required="" data-dashlane-rid="98961c84ca2be0b8" data-form-type="password" data-kwimpalastatus="alive" data-kwimpalaid="1685920134538-1">
+                <input id="login__password" type="password" @bind-value="@ViewModel.Password" name="password" class="form__input" placeholder="Пароль" required="" data-dashlane-rid="98961c84ca2be0b8" data-form-type="password" data-kwimpalastatus="alive" data-kwimpalaid="1685920134538-1">
             </div>
+            @if (ErrorMessage != null)
+            {                
+                <div class="form__field">
+                        <label class="error">@ErrorMessage</label>
+                </div>
+            }
             <div class="form__field">
                 <input type="submit" value="Войти">   
             </div>

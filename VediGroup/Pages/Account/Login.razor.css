@@ -203,3 +203,8 @@ p {
 .text--center {
   text-align: center;
 }
+
+.error{
+    color: red;
+    width: 100%;
+}

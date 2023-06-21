@@ -27,7 +27,14 @@ namespace VediGroup.Pages.Account
             if (DataAccess.GetUser(ViewModel.Username, ViewModel.Password) != null)
             {
                 await LocalStorageService.SetAsync(nameof(SecurityToken), token);
-                NavigationManager.NavigateTo("/", true);
+                if(DataAccess.GetUser(ViewModel.Username, ViewModel.Password).id_role == 1)
+                {
+                    NavigationManager.NavigateTo("/users", true);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/", true);
+                }
             }
             else
             {
